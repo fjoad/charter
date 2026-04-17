@@ -1,0 +1,15 @@
+description = "Read docs/STATUS.md and start the next step at the correct ritual tier. Automatically classifies the work and applies the right workflow depth."
+prompt = """
+The user wants to start the next step of this project.
+
+Read docs/STATUS.md and identify the next step (the first non-done item in "What to Work On Next").
+
+Invoke the `turn-ritual` skill to:
+1. Classify the next step as small/medium/major based on its complexity
+2. Apply the matching ritual:
+   - Small: create in-context plan, execute, verify
+   - Medium: use writing-plans skill, save plan to docs/plans/, proceed with TDD
+   - Major: use writing-plans skill with CHECKPOINT markers, pause for user approval before writing code
+
+If no STATUS.md exists, tell the user to run /charter-init or /charter-attach first.
+"""

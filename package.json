@@ -1,0 +1,12 @@
+{
+  "name": "charter",
+  "version": "0.1.0",
+  "description": "AI-assisted project discipline plugin for Claude Code and Codex CLI",
+  "type": "module",
+  "author": "fjoad",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fjoad/charter"
+  }
+}

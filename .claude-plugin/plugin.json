@@ -1,0 +1,34 @@
+{
+  "name": "charter",
+  "description": "AI-assisted project discipline plugin. Enforces session-to-session continuity through living docs and lightweight rituals. Requires superpowers (https://github.com/obra/superpowers).",
+  "version": "0.1.0",
+  "author": {
+    "name": "fjoad"
+  },
+  "license": "MIT",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/session-start.sh\"",
+            "timeout": 5,
+            "statusMessage": "Orienting..."
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/turn-nudge.sh\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
