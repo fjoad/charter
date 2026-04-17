@@ -12,14 +12,13 @@
 | Design spec | Done | `docs/superpowers/specs/2026-04-17-charter-design.md` | 13 decisions locked, spec self-reviewed |
 | Foundation docs | Done | `docs/` | VISION, STATUS, ARCHITECTURE, MANIFESTO written |
 | Root AGENTS.md + CLAUDE.md | Done | repo root | Canonical operational guide in place |
-| Plugin manifest | Not started | `.claude-plugin/` | plugin.json + marketplace.json + package.json |
-| Hooks | Not started | `plugin/hooks/` | session-start.sh + turn-nudge.sh |
-| Skills | Not started | `plugin/skills/` | brief-intake, codebase-inference, turn-ritual |
-| Commands | Not started | `plugin/commands/` | 6 TOML files |
-| Subagent | Not started | `plugin/agents/` | vision-drafter.md |
-| Template files | Not started | `template/` | Rules + doc skeletons + ADR/plan templates |
-| Docs (extended) | Not started | `docs/` | ADOPTING, TOKEN-BUDGET, COMPARISON, ADR |
-| Full README | Not started | `README.md` | Public landing page |
+| Plugin manifest | Done | `.claude-plugin/` | plugin.json + marketplace.json + package.json |
+| Hooks | Done | `plugin/hooks/` | session-start.sh + turn-nudge.sh |
+| Skills | Done | `plugin/skills/` | brief-intake, codebase-inference, turn-ritual |
+| Commands | Done | `plugin/commands/` | 6 TOML files |
+| Subagent | Done | `plugin/agents/` | vision-drafter.md |
+| Template files | Done | `template/` | 4 rules + 3 doc skeletons + ADR/plan templates + AGENTS.md |
+| Docs (extended) | Done | `docs/` | ADOPTING, TOKEN-BUDGET, COMPARISON, ADR, full README |
 | End-to-end tests | Not started | — | Greenfield + brownfield + ritual + session-start |
 
 ---
@@ -48,12 +47,12 @@
 
 1. ~~Design spec + self-review~~ (done)
 2. ~~Foundation docs (VISION, STATUS, ARCHITECTURE, MANIFESTO, AGENTS.md)~~ (done)
-3. **Plugin manifest** — `.claude-plugin/plugin.json`, `marketplace.json`, `package.json` **(next)**
-4. **Hooks** — `session-start.sh`, `turn-nudge.sh`
-5. **Core template files** — `template/.claude/rules/` (4 files) + `template/docs/` skeletons + ADR + plan templates
-6. **Skills** — `brief-intake`, `codebase-inference`, `turn-ritual`
-7. **Commands** — 6 TOML files
-8. **Subagent** — `vision-drafter.md`
-9. **Extended docs** — ADOPTING, TOKEN-BUDGET, COMPARISON, ADR for initial architecture, full README
-10. **End-to-end dogfood tests** — greenfield + brownfield + ritual + session-start + finish + cost
-11. **Publish** — rename folder, push to GitHub, submit to marketplace
+3. ~~Plugin manifest~~ (done)
+4. ~~Hooks~~ (done)
+5. ~~Core template files~~ (done)
+6. ~~Skills~~ (done)
+7. ~~Commands~~ (done)
+8. ~~Subagent~~ (done)
+9. ~~Extended docs~~ (done)
+10. **End-to-end dogfood tests** — greenfield + brownfield + ritual + session-start + finish + cost **(next)**
+11. **Publish** — rename folder to `charter`, push to GitHub, submit to marketplace
