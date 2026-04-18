@@ -24,13 +24,20 @@ Charter fixes this.
 
 ## Install
 
+**If Charter is listed in the official plugin directory:**
+```
+/plugin install superpowers
+/plugin install charter
+```
+
+**Install directly from GitHub** (always works, use this if the above doesn't):
 ```
 /plugin install superpowers
 /plugin marketplace add fjoad/charter
 /plugin install charter@fjoad-charter
 ```
 
-> Charter is pending submission to the official Claude Code plugin directory. Once listed, install will simplify to `/plugin install charter`.
+> Charter has been submitted to the official Claude Code plugin directory and is pending review. Once accepted, `/plugin install charter` will work directly. Until then, use the GitHub install path above.
 
 Then for a new project:
 ```
