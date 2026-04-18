@@ -9,19 +9,26 @@ You are bootstrapping a new project with Charter. Your job is to gather the mini
 
 ## Phase 1: Ask
 
-Ask the following questions. You can ask them all at once or in natural conversational flow — use your judgment based on how much context was given in `/charter-init`:
+Ask the following questions. **For each question, infer a reasonable answer from the context already given and offer it as a suggestion.** Ask the user to confirm, correct, or elaborate — not to answer from scratch.
+
+Format like:
+> **Key insight** — my guess: [your inference]. Right? Or is there something else driving this?
+
+Questions to cover:
 
 1. **What does this project do?** One sentence — what problem does it solve for whom?
-2. **What's the key insight?** Why is this approach better than the obvious alternative?
-3. **What is explicitly NOT in scope?** What would people expect to be here that you're deliberately excluding?
-4. **How will you know it's working?** What's a concrete success state — something you could check?
-5. **What are the 2-3 most important domain concepts?** (Terms that will recur throughout the codebase)
+2. **Key insight** — is there a specific approach or opinion that drives the design? (e.g. "use CSS instead of LaTeX", "local-first instead of cloud") What makes this different from the obvious alternative, if anything?
+3. **Not in scope** — what would people reasonably expect this to do that you're deliberately leaving out?
+4. **Success state** — what's a concrete check that it's working? Something you could run or observe.
+5. **Core domain concepts** — 2-3 terms that will recur throughout the codebase.
 
-If the user already provided some of this in their `/charter-init` message, skip or abbreviate those questions.
+If the user already provided some of this in their `/charter-init` message, skip or pre-fill those questions with your inference and just ask them to confirm.
+
+Aim to ask all questions in one message, each with a suggested answer. This should feel like a quick confirmation pass, not an interrogation.
 
 ## Phase 2: Draft
 
-Delegate to the `vision-drafter` subagent with the gathered answers. The subagent will produce a VISION.md draft.
+Delegate to the `vision-drafter` subagent with the gathered answers. The subagent will return draft VISION.md content — it does NOT write files.
 
 Present the draft to the user. Say:
 
@@ -60,4 +67,5 @@ Once the user approves the vision:
 
 - Never scaffold before vision is approved
 - Never overwrite existing files (brownfield safe — use /charter-attach for existing projects)
-- Keep questions conversational — this is an intake, not a form
+- Always pre-fill suggested answers — never ask blank questions
+- Keep it conversational — a confirmation pass, not a form
