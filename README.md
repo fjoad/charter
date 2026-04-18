@@ -65,14 +65,16 @@ Or for an existing project:
 
 ## Commands
 
-| Command | What it does |
-|---------|-------------|
-| `/charter-init` | Bootstrap new project — vision intake + scaffold |
-| `/charter-attach` | Attach to existing project non-destructively |
-| `/charter-next` | Start the next step from STATUS.md at correct ritual tier |
-| `/charter-finish` | Run finish ritual — tests, docs, commit, report |
-| `/charter-cost` | Report Charter's token overhead for this session |
-| `/charter-off` | Disable rituals for rest of session |
+Charter runs automatically — you don't need these commands for day-to-day use. They're there when you want to explicitly trigger something or take over.
+
+| Command | When to use it |
+|---------|---------------|
+| `/charter-init` | Once, to bootstrap a new project |
+| `/charter-attach` | Once, to attach Charter to an existing project |
+| `/charter-next` | Explicitly start the next step (Charter will nudge you anyway) |
+| `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) |
+| `/charter-cost` | See how many tokens Charter has added this session |
+| `/charter-off` | Kill rituals for the rest of the session — just get things done |
 
 ---
 

@@ -48,6 +48,8 @@ ${PLAN_CONTENT}
 ---
 
 Session start ritual: read STATUS.md ✓ — you know where this project stands. Check docs/ARCHITECTURE.md if you need structural context. Check docs/VISION.md if you need to understand the thesis. Find the current step in "What to Work On Next" above and proceed.
+
+When you respond, briefly tell the user: where the project stands (current step), and what Charter is doing this session (orienting from STATUS.md, classifying requests by tier, enforcing finish ritual). Keep it to 2-3 sentences — they shouldn't need to read docs to understand what's happening.
 ORIENT
 )
 
