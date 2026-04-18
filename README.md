@@ -24,6 +24,8 @@ Charter fixes this.
 
 ## Install
 
+> **Do not clone this repo.** Cloning is for contributing to Charter itself. To use Charter on your projects, install it as a plugin using the commands below.
+
 **If Charter is listed in the official plugin directory:**
 ```
 /plugin install superpowers
