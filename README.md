@@ -26,7 +26,8 @@ Charter fixes this.
 
 ```
 /plugin install superpowers
-/plugin install charter
+/plugin marketplace add fjoad/charter
+/plugin install charter@fjoad-charter
 ```
 
 Then for a new project:
