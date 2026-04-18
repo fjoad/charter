@@ -14,6 +14,12 @@ AI-assisted projects drift. Each new session starts cold: the assistant doesn't 
 
 Charter fixes this.
 
+**Without Charter** — every session starts with:
+> "What are we building? Where did we leave off? What decisions did we make?"
+
+**With Charter** — Claude opens with:
+> "You're on step 3: implementing the render pipeline. Last session you decided to use Puppeteer over wkhtmltopdf (see docs/decisions/). Next: write the HTML emit stage."
+
 ---
 
 ## Install
