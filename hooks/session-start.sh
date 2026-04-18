@@ -7,8 +7,13 @@ set -euo pipefail
 
 STATUS_FILE="docs/STATUS.md"
 
-# Only fire if this project has a Charter scaffold
+# If no Charter scaffold, suggest setup
 if [[ ! -f "$STATUS_FILE" ]]; then
+  printf '%s' "This project has no Charter scaffold. Run /charter-init to bootstrap a new project, or /charter-attach to attach Charter to this existing codebase." | python3 -c "
+import sys, json
+content = sys.stdin.read()
+print(json.dumps({'additionalContext': content}))
+"
   exit 0
 fi
 
