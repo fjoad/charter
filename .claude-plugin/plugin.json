@@ -12,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/session-start.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
             "timeout": 5,
             "statusMessage": "Orienting..."
           }
@@ -24,7 +24,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/turn-nudge.sh\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/turn-nudge.sh\"",
             "timeout": 5
           }
         ]
