@@ -15,10 +15,10 @@ fi
 # Read STATUS.md
 STATUS_CONTENT=$(cat "$STATUS_FILE")
 
-# Find the most recently modified plan (if any)
+# Find the most recently modified plan (exclude TEMPLATE.md)
 PLAN_CONTENT=""
 if [[ -d "docs/plans" ]]; then
-  LATEST_PLAN=$(ls -t docs/plans/*.md 2>/dev/null | head -1 || true)
+  LATEST_PLAN=$(ls -t docs/plans/*.md 2>/dev/null | grep -v 'TEMPLATE.md' | head -1 || true)
   if [[ -n "$LATEST_PLAN" && -f "$LATEST_PLAN" ]]; then
     PLAN_NAME=$(basename "$LATEST_PLAN")
     PLAN_CONTENT="

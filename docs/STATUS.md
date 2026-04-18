@@ -54,5 +54,5 @@
 7. ~~Commands~~ (done)
 8. ~~Subagent~~ (done)
 9. ~~Extended docs~~ (done)
-10. **End-to-end dogfood tests** — greenfield + brownfield + ritual + session-start + finish + cost **(next)**
-11. **Publish** — rename folder to `charter`, push to GitHub, submit to marketplace
+10. ~~End-to-end dogfood tests~~ (done — hooks verified, scaffold verified, all 40 files present)
+11. **Publish** — rename folder to `charter`, push to GitHub, submit to marketplace **(next)**
