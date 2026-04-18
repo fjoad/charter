@@ -5,30 +5,5 @@
   "author": {
     "name": "fjoad"
   },
-  "license": "MIT",
-  "hooks": {
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"",
-            "timeout": 5,
-            "statusMessage": "Orienting..."
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/turn-nudge.sh\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ]
-  }
+  "license": "MIT"
 }
