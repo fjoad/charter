@@ -30,6 +30,8 @@ Charter fixes this.
 /plugin install charter@fjoad-charter
 ```
 
+> Charter is pending submission to the official Claude Code plugin directory. Once listed, install will simplify to `/plugin install charter`.
+
 Then for a new project:
 ```
 /charter-init
