@@ -20,7 +20,7 @@
 | Extended docs | Done | `docs/` | ADOPTING, TOKEN-BUDGET, COMPARISON, README |
 | Verify script | Done | `scripts/verify-plugin.sh` | Pre-release checks: format, frontmatter, versions |
 | End-to-end tests | Not verified | — | Commands never tested on fresh install in v0.1.0; v0.1.1 pending manual verify |
-| Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — 2 commits ahead of origin, not yet pushed |
+| Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
 | Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
 
 ---
@@ -49,8 +49,8 @@
 ## What to Work On Next
 
 1. ~~Everything through publish~~ (done)
-2. **v0.1.1 fix shipped locally — push + verify + notify reviewer** **(current)**
-3. Manual install verification: fresh install, confirm all 6 commands register
-4. Marketplace reviewer notification (message template in plan `docs/plans/2026-04-20-commands-toml-to-md.md`)
+2. ~~v0.1.1 pushed — main + tag, verify script 17/17~~ (done)
+3. **Manual install verification — open Claude Code, confirm all 6 commands register in command palette** **(current)**
+4. Marketplace reviewer notification — no thread exists yet; awaiting Anthropic review queue
 5. Update install instructions once marketplace accepted
 6. Monitor for user feedback and bug reports
