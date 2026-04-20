@@ -6,9 +6,9 @@
 
 ## Overview
 
-Charter is a Claude Code plugin. It has two parallel trees:
+Charter is a Claude Code plugin. It has two parallel components:
 
-- **`plugin/`** — the plugin itself (installed into Claude Code, runs in any project)
+- **Plugin components** (`skills/`, `commands/`, `hooks/`, `agents/`) — installed into Claude Code, runs in any project
 - **`template/`** — scaffolded into user projects when they run `/charter-init` or `/charter-attach`
 
 Charter layers on top of [superpowers](https://github.com/obra/superpowers). It doesn't replace superpowers skills — it coordinates when to invoke them.
@@ -22,26 +22,25 @@ Charter layers on top of [superpowers](https://github.com/obra/superpowers). It 
   plugin.json           # Plugin manifest. Declares hooks, name, version, author.
   marketplace.json      # Marketplace listing for discovery.
 
-plugin/
-  skills/
-    brief-intake/
-      SKILL.md          # Greenfield vision bootstrap skill
-    codebase-inference/
-      SKILL.md          # Brownfield vision bootstrap skill
-    turn-ritual/
-      SKILL.md          # Per-tier ritual orchestrator skill
-  commands/
-    charter-init.toml   # /charter-init — greenfield scaffold
-    charter-attach.toml # /charter-attach — brownfield scaffold
-    charter-next.toml   # /charter-next — read STATUS, start next step
-    charter-finish.toml # /charter-finish — run step-complete ritual
-    charter-cost.toml   # /charter-cost — report token overhead
-    charter-off.toml    # /charter-off — disable rituals this session
-  hooks/
-    session-start.sh    # SessionStart hook — orients Claude at session start
-    turn-nudge.sh       # UserPromptSubmit hook — 20-token tier reminder
-  agents/
-    vision-drafter.md   # Subagent for drafting VISION.md
+skills/
+  brief-intake/
+    SKILL.md            # Greenfield vision bootstrap skill
+  codebase-inference/
+    SKILL.md            # Brownfield vision bootstrap skill
+  turn-ritual/
+    SKILL.md            # Per-tier ritual orchestrator skill
+commands/
+  charter-init.md       # /charter-init — greenfield scaffold
+  charter-attach.md     # /charter-attach — brownfield scaffold
+  charter-next.md       # /charter-next — read STATUS, start next step
+  charter-finish.md     # /charter-finish — run step-complete ritual
+  charter-cost.md       # /charter-cost — report token overhead
+  charter-off.md        # /charter-off — disable rituals this session
+hooks/
+  session-start.sh      # SessionStart hook — orients Claude at session start
+  turn-nudge.sh         # UserPromptSubmit hook — 20-token tier reminder
+agents/
+  vision-drafter.md     # Subagent for drafting VISION.md
 ```
 
 ---
@@ -131,7 +130,7 @@ No import relationship. No version pinning in v1. If superpowers skill names cha
 
 ```
 User: /charter-init "A CLI tool for..."
-  → charter-init.toml command fires
+  → /charter-init command fires
   → Skill: brief-intake
     → Claude asks 3-5 vision questions
     → Agent: vision-drafter.md
@@ -164,10 +163,10 @@ User opens Claude Code in Charter-managed project
 ```json
 {
   "name": "charter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "hooks": {
-    "SessionStart": [{"hooks": [{"type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/session-start.sh\"", "timeout": 5}]}],
-    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/plugin/hooks/turn-nudge.sh\"", "timeout": 5}]}]
+    "SessionStart": [{"hooks": [{"type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh\"", "timeout": 5}]}],
+    "UserPromptSubmit": [{"hooks": [{"type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/turn-nudge.sh\"", "timeout": 5}]}]
   }
 }
 ```
@@ -181,21 +180,25 @@ description: Use when starting a new project with Charter after /charter-init. A
 ---
 ```
 
-### TOML command
+### Markdown command
 
-```toml
-description = "Bootstrap a new project with Charter's living-docs scaffold."
-prompt = "Invoke the brief-intake skill to gather vision, then scaffold the Charter template into this project."
+```markdown
+---
+description: "Bootstrap a new project with Charter's living-docs scaffold."
+argument-hint: "[optional project vision hints]"
+---
+
+Invoke the brief-intake skill to gather vision, then scaffold the Charter template into this project.
 ```
 
 ---
 
 ## How to Extend
 
-**Add a new ritual tier:** Edit `plugin/skills/turn-ritual/SKILL.md` tier table + `template/.claude/rules/turn-ritual.md`.
+**Add a new ritual tier:** Edit `skills/turn-ritual/SKILL.md` tier table + `template/.claude/rules/turn-ritual.md`.
 
-**Add a new template file:** Add to `template/`, update `plugin/commands/charter-init.toml` and `charter-attach.toml` to copy it.
+**Add a new template file:** Add to `template/`, update `commands/charter-init.md` and `commands/charter-attach.md` to copy it.
 
-**Add a new slash command:** Create `plugin/commands/<name>.toml` with `description` and `prompt`. No registration needed — Claude Code auto-discovers `.toml` files in `commands/`.
+**Add a new slash command:** Create `commands/<name>.md` with YAML frontmatter (`description`, optional `argument-hint`) and prompt body. Use `$ARGUMENTS` to capture user input. Claude Code auto-discovers `.md` files in `commands/`.
 
-**Add a new skill:** Create `plugin/skills/<name>/SKILL.md` with proper frontmatter.
+**Add a new skill:** Create `skills/<name>/SKILL.md` with proper frontmatter.

@@ -82,7 +82,7 @@ Charter uses [superpowers](https://github.com/obra/superpowers). Key skills:
 | `superpowers:systematic-debugging` | When something fails — diagnose before guessing |
 | `superpowers:subagent-driven-development` | Large tasks that benefit from parallel subagents |
 
-Charter's own skills (in `plugin/skills/`):
+Charter's own skills (in `skills/`):
 - `brief-intake` — greenfield vision bootstrap
 - `codebase-inference` — brownfield vision bootstrap
 - `turn-ritual` — per-tier ritual routing
@@ -117,13 +117,13 @@ Create a decision file when making a significant design choice:
 
 ```
 .claude-plugin/         # Plugin manifest + marketplace listing
-plugin/
-  skills/               # Charter's own SKILL.md files
-  commands/             # TOML slash commands
-  hooks/                # SessionStart + UserPromptSubmit scripts
-  agents/               # Subagent prompt files
+skills/                 # Charter's own SKILL.md files
+commands/               # Markdown slash commands (*.md with YAML frontmatter)
+hooks/                  # SessionStart + UserPromptSubmit scripts
+agents/                 # Subagent prompt files
 template/               # Scaffolded into user projects
 docs/                   # Docs ABOUT Charter (dogfood)
+scripts/                # verify-plugin.sh — run before any release
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full layout with file-level detail.
