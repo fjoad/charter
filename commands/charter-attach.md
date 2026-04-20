@@ -1,8 +1,11 @@
-description = "Attach Charter to an existing project. Infers project vision from codebase, presents draft for user correction, then scaffolds non-destructively alongside existing files."
-prompt = """
+---
+description: "Attach Charter to an existing project. Infers project vision from codebase, presents draft for user correction, then scaffolds non-destructively alongside existing files."
+argument-hint: "[optional context about the codebase]"
+---
+
 The user wants to attach Charter to an existing codebase.
 
-{{args}}
+$ARGUMENTS
 
 Invoke the `codebase-inference` skill to:
 1. Read README, entry points, existing docs, and package manifests
@@ -12,4 +15,3 @@ Invoke the `codebase-inference` skill to:
 5. Scaffold Charter's template non-destructively (never overwrite existing files)
 
 Key constraint: this is brownfield. Preserve all existing files and structure. Charter attaches alongside, not on top of.
-"""

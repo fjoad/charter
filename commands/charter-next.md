@@ -1,5 +1,7 @@
-description = "Read docs/STATUS.md and start the next step at the correct ritual tier. Automatically classifies the work and applies the right workflow depth."
-prompt = """
+---
+description: "Read docs/STATUS.md and start the next step at the correct ritual tier. Automatically classifies the work and applies the right workflow depth."
+---
+
 The user wants to start the next step of this project.
 
 Read docs/STATUS.md and identify the next step (the first non-done item in "What to Work On Next").
@@ -12,4 +14,3 @@ Invoke the `turn-ritual` skill to:
    - Major: use writing-plans skill with CHECKPOINT markers, pause for user approval before writing code
 
 If no STATUS.md exists, tell the user to run /charter-init or /charter-attach first.
-"""

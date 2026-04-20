@@ -1,8 +1,11 @@
-description = "Run the step-complete finish ritual: verify tests pass, update STATUS.md and docs, commit changes, and report to user in standard format."
-prompt = """
+---
+description: "Run the step-complete finish ritual: verify tests pass, update STATUS.md and docs, commit changes, and report to user in standard format."
+argument-hint: "[optional notes about what was completed]"
+---
+
 The user has completed a step and wants to run the Charter finish ritual.
 
-{{args}}
+$ARGUMENTS
 
 Run the mandatory finish checklist from .claude/rules/workflow.md:
 
@@ -24,4 +27,3 @@ Run the mandatory finish checklist from .claude/rules/workflow.md:
 - Next step: [what STATUS.md now says is next]
 
 Do not claim the step is done until all checklist items are complete.
-"""

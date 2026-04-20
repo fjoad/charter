@@ -1,8 +1,11 @@
-description = "Bootstrap a new project with Charter's living-docs scaffold. Asks vision questions, drafts VISION.md, and sets up docs/ + .claude/rules/ + AGENTS.md."
-prompt = """
+---
+description: "Bootstrap a new project with Charter's living-docs scaffold. Asks vision questions, drafts VISION.md, and sets up docs/ + .claude/rules/ + AGENTS.md."
+argument-hint: "[optional project vision hints]"
+---
+
 The user wants to initialize a new project with Charter.
 
-{{args}}
+$ARGUMENTS
 
 Invoke the `brief-intake` skill to:
 1. Gather the project vision through clarifying questions
@@ -11,4 +14,3 @@ Invoke the `brief-intake` skill to:
 4. Scaffold Charter's template (docs/, .claude/rules/, AGENTS.md, CLAUDE.md) into this project
 
 Do not scaffold until the user approves the vision draft. Never overwrite existing files.
-"""

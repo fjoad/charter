@@ -1,7 +1,7 @@
 {
   "name": "charter",
   "description": "AI-assisted project discipline plugin. Enforces session-to-session continuity through living docs and lightweight rituals. Requires superpowers (https://github.com/obra/superpowers).",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "fjoad"
   },

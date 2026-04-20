@@ -1,5 +1,7 @@
-description = "Report the token overhead Charter adds to this session: session-start orient block, per-turn nudges, and ritual overhead from rule files."
-prompt = """
+---
+description: "Report the token overhead Charter adds to this session: session-start orient block, per-turn nudges, and ritual overhead from rule files."
+---
+
 The user wants to understand Charter's token overhead for this session.
 
 Estimate and report the token cost Charter has added to this session:
@@ -26,4 +28,3 @@ Format:
 | **Overhead %** | **~[N]%** | Overhead / context window |
 
 Note: Rule files and the orient block are what make Charter useful — without them, Claude starts each session cold. The cost is the price of continuity.
-"""
