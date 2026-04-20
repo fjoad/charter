@@ -19,7 +19,7 @@
 | Template files | Done | `template/` | 4 rules + 3 doc skeletons + ADR/plan templates |
 | Extended docs | Done | `docs/` | ADOPTING, TOKEN-BUDGET, COMPARISON, README |
 | Verify script | Done | `scripts/verify-plugin.sh` | Pre-release checks: format, frontmatter, versions |
-| End-to-end tests | Not verified | — | Commands never tested on fresh install in v0.1.0; v0.1.1 pending manual verify |
+| End-to-end tests | Done (v0.1.1) | — | All 6 commands verified on fresh install 2026-04-20 |
 | Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
 | Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
 
@@ -49,8 +49,7 @@
 ## What to Work On Next
 
 1. ~~Everything through publish~~ (done)
-2. ~~v0.1.1 pushed — main + tag, verify script 17/17~~ (done)
-3. **Manual install verification — open Claude Code, confirm all 6 commands register in command palette** **(current)**
-4. Marketplace reviewer notification — no thread exists yet; awaiting Anthropic review queue
-5. Update install instructions once marketplace accepted
-6. Monitor for user feedback and bug reports
+2. ~~v0.1.1 fix complete — commands verified, docs updated, pushed~~ (done)
+3. **Await marketplace review acceptance** **(current)**
+4. Update install instructions once marketplace accepted
+5. Monitor for user feedback and bug reports
