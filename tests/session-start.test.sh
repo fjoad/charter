@@ -17,6 +17,12 @@ run_hook_in_temp() {
   git init -q -b main 2>/dev/null || git init -q
   git config user.email "test@test.test"
   git config user.name "test"
+  # Establish HEAD = main with an initial commit so non-main branches are detectable
+  echo "init" > .gitkeep
+  git add .gitkeep
+  git commit -q -m "init"
+  # Try to ensure branch is named "main" (handles older git defaults)
+  git branch -m main 2>/dev/null || true
   "$setup_fn"
   local output
   output=$(bash "$HOOK" 2>&1 || true)
@@ -66,3 +72,50 @@ echo "  scenario: scaffold on main, with plan"
 out=$(run_hook_in_temp setup_main_with_status_and_plan)
 assert_contains "$out" "Test Project Status" "STATUS.md content appears"
 assert_contains "$out" "Active Plan: 2026-05-01-feature-x.md" "latest plan surfaces by name"
+
+# --- Branch-aware tests ---
+
+setup_feature_branch_with_matching_plan() {
+  setup_main_with_status
+  git checkout -q -b feat/branch-handling
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-branch-handling.md <<EOF
+# Branch Handling Plan
+
+Branch-specific plan content.
+EOF
+}
+
+setup_feature_branch_no_plan() {
+  setup_main_with_status
+  git checkout -q -b feat/other-thing
+}
+
+setup_feature_branch_with_frontmatter_match() {
+  setup_main_with_status
+  git checkout -q -b weird-name-xyz
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-totally-different-slug.md <<EOF
+---
+branch: weird-name-xyz
+---
+
+# Plan tied to branch via frontmatter
+EOF
+}
+
+echo "  scenario: feature branch with matching plan"
+out=$(run_hook_in_temp setup_feature_branch_with_matching_plan)
+assert_contains "$out" "On branch: feat/branch-handling" "branch is named in output"
+assert_contains "$out" "Branch Plan: 2026-05-12-branch-handling.md" "matching plan is surfaced"
+assert_contains "$out" "Branch Handling Plan" "plan content appears"
+
+echo "  scenario: feature branch, no matching plan"
+out=$(run_hook_in_temp setup_feature_branch_no_plan)
+assert_contains "$out" "On branch: feat/other-thing" "branch is named"
+assert_contains "$out" "No plan file detected for this branch" "soft hint suggests /charter-adopt"
+assert_contains "$out" "/charter-adopt branches" "hint mentions the opt-in command"
+
+echo "  scenario: feature branch, plan matched by frontmatter"
+out=$(run_hook_in_temp setup_feature_branch_with_frontmatter_match)
+assert_contains "$out" "Branch Plan: 2026-05-12-totally-different-slug.md" "frontmatter match works"

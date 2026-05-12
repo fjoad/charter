@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Charter session-start hook
 # Detects Charter scaffold and injects current project state into Claude's context.
+# Branch-aware: on a non-main branch, surfaces the matching plan file (if any).
 # Outputs JSON { "additionalContext": "..." } or exits silently if no scaffold.
 
 set -euo pipefail
@@ -17,20 +18,101 @@ print(json.dumps({'additionalContext': content}))
   exit 0
 fi
 
-# Read STATUS.md
+# Detect current branch (silent fallback if not a git repo)
+CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
+
+# Slugify: lowercase, replace non-alphanumeric with '-', collapse repeats
+slugify() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]' | sed -E 's/[^a-z0-9]+/-/g; s/^-+|-+$//g'
+}
+
+# Find a plan file that matches the given branch.
+# Match rules (in order):
+#   1. Plan has YAML frontmatter with `branch: <name>` matching
+#   2. Plan filename slug contains the branch slug, where the branch slug is
+#      derived from the part of the branch name after the last `/` (so
+#      `feat/branch-handling` matches a plan with `branch-handling` in its name).
+# Echoes the matching plan file path, or empty string.
+find_branch_plan() {
+  local branch="$1"
+  [[ -z "$branch" ]] && return
+  [[ ! -d "docs/plans" ]] && return
+
+  # Use last `/`-separated segment for slug matching (strips prefixes like feat/, fix/)
+  local branch_tail="${branch##*/}"
+  local branch_slug
+  branch_slug=$(slugify "$branch_tail")
+  [[ -z "$branch_slug" ]] && return
+
+  local plan
+  # Rule 1: frontmatter match (against full branch name)
+  for plan in docs/plans/*.md; do
+    [[ -f "$plan" ]] || continue
+    [[ "$(basename "$plan")" == "TEMPLATE.md" ]] && continue
+    if head -10 "$plan" | grep -qE "^branch:[[:space:]]*${branch}[[:space:]]*$"; then
+      printf '%s' "$plan"
+      return
+    fi
+  done
+
+  # Rule 2: filename contains branch slug (tail only)
+  for plan in docs/plans/*.md; do
+    [[ -f "$plan" ]] || continue
+    [[ "$(basename "$plan")" == "TEMPLATE.md" ]] && continue
+    local plan_slug
+    plan_slug=$(slugify "$(basename "$plan" .md)")
+    if [[ "$plan_slug" == *"$branch_slug"* ]]; then
+      printf '%s' "$plan"
+      return
+    fi
+  done
+}
+
+# Is this branch a "main" branch (not a feature branch)?
+is_main_branch() {
+  [[ "$1" == "main" || "$1" == "master" || -z "$1" ]]
+}
+
 STATUS_CONTENT=$(cat "$STATUS_FILE")
 
-# Find the most recently modified plan (exclude TEMPLATE.md)
+# Branch context block (empty unless on a feature branch)
+BRANCH_BLOCK=""
 PLAN_CONTENT=""
-if [[ -d "docs/plans" ]]; then
-  LATEST_PLAN=$(ls -t docs/plans/*.md 2>/dev/null | grep -v 'TEMPLATE.md' | head -1 || true)
-  if [[ -n "$LATEST_PLAN" && -f "$LATEST_PLAN" ]]; then
-    PLAN_NAME=$(basename "$LATEST_PLAN")
-    PLAN_CONTENT="
+
+if ! is_main_branch "$CURRENT_BRANCH"; then
+  BRANCH_PLAN=$(find_branch_plan "$CURRENT_BRANCH")
+  if [[ -n "$BRANCH_PLAN" ]]; then
+    PLAN_NAME=$(basename "$BRANCH_PLAN")
+    BRANCH_BLOCK="
+## On branch: ${CURRENT_BRANCH}
+
+### Branch Plan: ${PLAN_NAME}
+
+$(cat "$BRANCH_PLAN")
+
+---
+"
+  else
+    BRANCH_BLOCK="
+## On branch: ${CURRENT_BRANCH}
+
+No plan file detected for this branch. Run /charter-adopt branches to enable branch-aware conventions, or create a plan at docs/plans/YYYY-MM-DD-${CURRENT_BRANCH//\//-}.md.
+
+---
+"
+  fi
+else
+  # On main: fall back to surfacing latest plan (legacy behavior)
+  if [[ -d "docs/plans" ]]; then
+    LATEST_PLAN=$(ls -t docs/plans/*.md 2>/dev/null | grep -v 'TEMPLATE.md' | head -1 || true)
+    if [[ -n "$LATEST_PLAN" && -f "$LATEST_PLAN" ]]; then
+      PLAN_NAME=$(basename "$LATEST_PLAN")
+      PLAN_CONTENT="
 
 ## Active Plan: ${PLAN_NAME}
 
 $(cat "$LATEST_PLAN")"
+    fi
   fi
 fi
 
@@ -39,7 +121,7 @@ ORIENT=$(cat <<ORIENT
 ## Charter: Project Orientation
 
 You are starting a session in a Charter-managed project. Read the following before responding.
-
+${BRANCH_BLOCK}
 ### Project Status
 
 ${STATUS_CONTENT}
