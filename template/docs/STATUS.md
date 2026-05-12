@@ -29,6 +29,14 @@
 
 ---
 
+## In-flight Branches
+
+<!-- GUIDANCE: One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section to surface branch-specific context. Updated on the branch as work progresses; the line is removed when the branch merges. -->
+
+_None active._
+
+---
+
 ## Recent Decisions
 
 <!-- GUIDANCE: Last 3-5 significant decisions. Full ADRs go in docs/decisions/. This table is the quick-reference digest. -->
