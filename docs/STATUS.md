@@ -22,7 +22,7 @@
 | End-to-end tests | Done (v0.1.1) | — | All 6 commands verified on fresh install 2026-04-20 |
 | Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
 | Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
-| Branch handling | In progress | `hooks/`, `commands/`, `template/`, `tests/` | v0.2.0 — see [docs/plans/2026-05-12-branch-handling.md](plans/2026-05-12-branch-handling.md) |
+| Branch handling | Done (v0.2.0) | `hooks/`, `commands/`, `template/`, `tests/` | Merged 2026-05-12 — see [decision](decisions/2026-05-12-branch-handling.md) and [plan](plans/2026-05-12-branch-handling.md) |
 | Test harness | Done (v0.2.0) | `tests/`, `scripts/verify-plugin.sh` | Shell-based test runner; 13 assertions for session-start.sh behavior |
 
 ---
@@ -39,7 +39,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-- `feat/branch-handling` → [docs/plans/2026-05-12-branch-handling.md](plans/2026-05-12-branch-handling.md) — implementing v0.2.0, dogfooding the feature
+_None active._
 
 ---
 
@@ -61,7 +61,8 @@
 
 1. ~~Everything through publish~~ (done)
 2. ~~v0.1.1 fix complete — commands verified, docs updated, pushed~~ (done)
-3. **Branch handling (v0.2.0)** **(current — feat/branch-handling)**
-4. Await marketplace review acceptance
-5. Update install instructions once marketplace accepted
-6. Monitor for user feedback and bug reports
+3. ~~Branch handling (v0.2.0) — merged 2026-05-12~~ (done)
+4. **Push v0.2.0 to GitHub** **(current)**
+5. Await marketplace review acceptance
+6. Update install instructions once marketplace accepted
+7. Monitor for user feedback and bug reports
