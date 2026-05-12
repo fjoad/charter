@@ -57,3 +57,16 @@ When a significant design choice is made during implementation (not just brainst
 - **If a step fails, use `systematic-debugging` skill** before guessing at fixes.
 - **If tasks are independent, use `subagent-driven-development`** to run them concurrently.
 - **The finish checklist is not optional.** If the user has to ask "did you update the docs?" — you failed.
+
+## Branch Discipline
+
+On feature branches:
+- Edit only your branch's plan file in `docs/plans/`
+- Do NOT edit STATUS.md Component Status, What to Work On Next, or Recent Decisions sections
+- These sections only update on merge to main (handled by `/charter-finish` on the main branch)
+- This avoids merge conflicts and keeps STATUS.md as the canonical "shipped" state
+
+When starting work on a new feature:
+1. Create the branch: `git checkout -b feat/<short-name>`
+2. Create a plan file: `docs/plans/YYYY-MM-DD-<short-name>.md` (filename should include `<short-name>` so the session-start hook can match it to the branch)
+3. Optionally add a line to STATUS.md "In-flight Branches" pointing at the plan

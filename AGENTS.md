@@ -67,6 +67,8 @@ Standard report format:
 - Next step: [what STATUS.md says is next]
 ```
 
+**Branch awareness (v0.2.0+):** On feature branches, `/charter-finish` updates only the branch plan, not STATUS.md component sections. The session-start hook surfaces the matching plan for the current branch (filename slug match or YAML frontmatter `branch:` key). See [docs/ARCHITECTURE.md § Branch Handling](docs/ARCHITECTURE.md#branch-handling) for the full design.
+
 ---
 
 ## Skills Available

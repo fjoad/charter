@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-04-20  
+**Last updated:** 2026-05-12  
 **Current branch:** `main`
 
 ---
@@ -22,6 +22,8 @@
 | End-to-end tests | Done (v0.1.1) | — | All 6 commands verified on fresh install 2026-04-20 |
 | Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
 | Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
+| Branch handling | In progress | `hooks/`, `commands/`, `template/`, `tests/` | v0.2.0 — see [docs/plans/2026-05-12-branch-handling.md](plans/2026-05-12-branch-handling.md) |
+| Test harness | Done (v0.2.0) | `tests/`, `scripts/verify-plugin.sh` | Shell-based test runner; 13 assertions for session-start.sh behavior |
 
 ---
 
@@ -33,10 +35,19 @@
 
 ---
 
+## In-flight Branches
+
+<!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
+
+- `feat/branch-handling` → [docs/plans/2026-05-12-branch-handling.md](plans/2026-05-12-branch-handling.md) — implementing v0.2.0, dogfooding the feature
+
+---
+
 ## Recent Decisions
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-05-12 | Branch handling via capability detection | Backward-compat, opt-in, plans-as-branch-unit (see decisions/2026-05-12-branch-handling.md) |
 | 2026-04-20 | Commands must be `.md` not `.toml` | Claude Code plugin loader only reads flat MD with YAML frontmatter |
 | 2026-04-18 | hooks/ → hooks/hooks.json | Standard plugin structure per Claude Code docs |
 | 2026-04-18 | skills/ at root (not plugin/) | Claude Code discovers by convention, not plugin.json |
@@ -50,6 +61,7 @@
 
 1. ~~Everything through publish~~ (done)
 2. ~~v0.1.1 fix complete — commands verified, docs updated, pushed~~ (done)
-3. **Await marketplace review acceptance** **(current)**
-4. Update install instructions once marketplace accepted
-5. Monitor for user feedback and bug reports
+3. **Branch handling (v0.2.0)** **(current — feat/branch-handling)**
+4. Await marketplace review acceptance
+5. Update install instructions once marketplace accepted
+6. Monitor for user feedback and bug reports

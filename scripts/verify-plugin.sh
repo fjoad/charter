@@ -81,13 +81,26 @@ for f in "$REPO_DIR"/skills/*/SKILL.md; do
   fi
 done
 
-# Summary
+# Summary of structural checks
 echo ""
 echo "==========================="
-echo "Results: $PASS passed, $FAIL failed"
+echo "Structural checks: $PASS passed, $FAIL failed"
 if [[ $FAIL -gt 0 ]]; then
-  echo "FAIL — fix the errors above before releasing"
+  echo "FAIL — fix structural errors above before releasing"
   exit 1
 fi
 echo "PASS — plugin structure looks good"
+
+# Run behavioral tests
+if [[ -f "$REPO_DIR/tests/run-tests.sh" ]]; then
+  echo ""
+  echo "Running behavioral tests..."
+  if ! bash "$REPO_DIR/tests/run-tests.sh"; then
+    echo "FAIL — behavioral tests failed"
+    exit 1
+  fi
+fi
+
+echo ""
+echo "All checks passed."
 exit 0

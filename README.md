@@ -63,6 +63,8 @@ Or for an existing project:
 
 **Checkpoint-based autonomy:** Plans embed `## CHECKPOINT: user review` markers. AI runs autonomously between checkpoints, pauses at each. You stay in control without micromanaging.
 
+**Branch-aware workflows (v0.2.0+):** Feature branches get their own plan; the finish ritual adapts; STATUS.md stays conflict-free on merge. Backward compatible — existing projects keep working unchanged after update.
+
 ---
 
 ## Commands
@@ -73,8 +75,9 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 |---------|---------------|
 | `/charter-init` | Once, to bootstrap a new project |
 | `/charter-attach` | Once, to attach Charter to an existing project |
+| `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches`) |
 | `/charter-next` | Explicitly start the next step (Charter will nudge you anyway) |
-| `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) |
+| `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) — adapts to main vs feature branch |
 | `/charter-cost` | See how many tokens Charter has added this session |
 | `/charter-off` | Kill rituals for the rest of the session — just get things done |
 
