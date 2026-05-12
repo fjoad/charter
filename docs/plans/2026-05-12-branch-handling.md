@@ -1,5 +1,7 @@
 # Branch Handling Implementation Plan
 
+**Status:** ✅ Complete — 2026-05-12. All 12 tasks executed. 10 commits on `feat/branch-handling`, 13/13 tests pass.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add branch handling to Charter so feature-branch workflows work cleanly, with full backward compatibility — existing installations must keep working unchanged after updating.
