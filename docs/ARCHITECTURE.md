@@ -69,6 +69,37 @@ This fires silently. User doesn't see it. Claude applies it before responding.
 
 ---
 
+## Branch Handling
+
+Charter supports feature-branch workflows via two mechanisms:
+
+### Branch-aware session-start hook
+
+`hooks/session-start.sh` reads the current git branch. If on a non-main branch, it searches `docs/plans/` for a matching plan file. Matching rules, in order:
+
+1. Plan has YAML frontmatter with `branch: <name>` exactly matching the current branch.
+2. Plan filename slug contains the branch slug, where the branch slug is derived from the part of the branch name **after the last `/`** (so `feat/branch-handling` matches a plan with `branch-handling` in its name; prefixes like `feat/`, `fix/`, `chore/` are stripped).
+
+If a plan matches, it's surfaced in the orient block. If no plan matches, a soft hint suggests `/charter-adopt branches`.
+
+On main (or master, or detached HEAD), the legacy behavior is preserved: the most-recently-modified plan is surfaced.
+
+### Branch-aware finish ritual
+
+`/charter-finish` checks the current branch:
+- **Main:** the original finish flow — update STATUS.md, ARCHITECTURE.md, AGENTS.md, commit, report.
+- **Feature branch:** update only the branch plan and any "In-flight Branches" entry. Do NOT touch STATUS.md component sections. Route to `superpowers:finishing-a-development-branch` for merge/PR decisions.
+
+### Opt-in via `/charter-adopt branches`
+
+For existing projects, `/charter-adopt branches` idempotently adds an "In-flight Branches" section to STATUS.md and a branch-discipline rule to workflow.md, asking before each change.
+
+### Capability detection
+
+All branch-aware behavior is purely additive. Missing structures (no plan file, no "In-flight Branches" section, no branch-discipline rule) default to today's behavior. Existing Charter projects continue to work without modification after a plugin update.
+
+---
+
 ## Skill Invocation Patterns
 
 Skills are SKILL.md files. Claude Code loads them via the `Skill` tool.
@@ -202,3 +233,5 @@ Invoke the brief-intake skill to gather vision, then scaffold the Charter templa
 **Add a new slash command:** Create `commands/<name>.md` with YAML frontmatter (`description`, optional `argument-hint`) and prompt body. Use `$ARGUMENTS` to capture user input. Claude Code auto-discovers `.md` files in `commands/`.
 
 **Add a new skill:** Create `skills/<name>/SKILL.md` with proper frontmatter.
+
+**Add a new opt-in convention:** Extend `commands/charter-adopt.md` with a new convention block. Each convention should: detect whether it's already adopted, propose changes to user files one at a time, ask before each, report what changed.
