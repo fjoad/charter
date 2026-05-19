@@ -1,19 +1,20 @@
 ---
-description: "Adopt an optional Charter convention into this project. Idempotent — safe to run multiple times. Currently supported: 'branches' (enables branch-aware workflows)."
-argument-hint: "<convention>  (e.g., branches)"
+description: "Adopt an optional Charter convention into this project. Idempotent — safe to run multiple times. Currently supported: 'branches', 'context'."
+argument-hint: "<convention>  (e.g., branches | context)"
 ---
 
 The user is opting into a Charter convention.
 
 $ARGUMENTS
 
-Parse the argument as the convention name. Currently supported: `branches`.
+Parse the argument as the convention name. Currently supported: `branches`, `context`.
 
 If the argument is empty or unrecognized, list the supported conventions and stop:
 
 ```
 Supported conventions:
   branches — enable branch-aware workflows (plans tied to feature branches, branch-aware finish ritual)
+  context  — enable working-memory doc (docs/CONTEXT.md surviving /compact, with /charter-remember and /charter-recover commands)
 ```
 
 ---
@@ -83,3 +84,119 @@ After all changes are applied (or skipped), report:
 ```
 
 If the user declined every change, report that adoption was a no-op and explain that the plugin will still work in legacy mode.
+
+---
+
+## Convention: `context`
+
+Goal: enable working memory that survives `/compact`. The AI maintains `docs/CONTEXT.md` during sessions; after `/compact`, `/charter-recover` reads it to restore orientation without re-scanning the transcript.
+
+Make the following changes, **asking the user before each one**:
+
+### Change 1: Scaffold docs/CONTEXT.md
+
+Check if `docs/CONTEXT.md` exists. If yes, skip — already adopted.
+
+If no, propose creating it with the following content (substitute the project name from `docs/STATUS.md`'s top heading; use today's date for [DATE]):
+
+```markdown
+# [Project Name] — Working Memory
+
+<!-- GUIDANCE: This is the AI's working memory across compactions — things discovered during sessions that would otherwise be lost when `/compact` runs. The AI maintains this inline during sessions per `.claude/rules/context-discipline.md`. After `/compact`, run `/charter-recover` to restore orientation from this file + STATUS.md + the active branch plan. Keep entries terse (1-2 lines each). Prune stale items rather than letting the file grow forever. -->
+
+**Last updated:** [DATE]
+
+---
+
+## Environment Quirks
+
+_None recorded yet._
+
+---
+
+## Working Patterns
+
+_None recorded yet._
+
+---
+
+## Don't Repeat
+
+_None recorded yet._
+
+---
+
+## Open Questions
+
+_None recorded yet._
+
+---
+
+## User Emphases
+
+_None recorded yet._
+
+---
+
+## When to Update This File
+
+The AI should update CONTEXT.md inline (mid-session, not as a finish step) when a non-obvious environment fact surfaces, a code pattern works after debugging, a path is tried and fails, the user emphasizes something multiple times, or a mid-stream decision is made.
+
+When CONTEXT.md grows past ~200 lines, audit and prune.
+```
+
+Show the user the proposed content. Ask: "Create docs/CONTEXT.md with this content? (yes/no)" If yes, create; if no, skip.
+
+### Change 2: Add context-discipline rule
+
+Check if `.claude/rules/context-discipline.md` exists. If yes, skip.
+
+If no, propose creating it with the following content:
+
+```markdown
+# Context Discipline
+
+Charter maintains `docs/CONTEXT.md` as working memory across compactions. The AI updates it **inline** during the session — not as a separate finish step.
+
+## When to Write
+
+Append to CONTEXT.md when ANY of these happen:
+- Environment quirk: non-obvious fact about runtime, OS, tools, services
+- Working pattern: code/command that solved a non-trivial problem (with one-line "why")
+- Don't repeat: tried-and-fails, with symptom + the right alternative
+- User emphasis: the user explicitly says something is important or repeats it
+- Mid-stream decision: a choice not yet warranting a decision record
+
+## When NOT to Write
+
+- Project state → STATUS.md
+- Architecture → ARCHITECTURE.md
+- Design choices with alternatives → `docs/decisions/`
+- Trivial output, single test passes, command exit codes
+- Genuinely ephemeral state
+
+## How to Write
+
+Append to matching section. Terse: 1-2 lines max. Update "Last updated".
+
+## When the User Runs /compact
+
+Capture anything important to CONTEXT.md *before* it's lost. `/charter-remember "..."` is the explicit version.
+
+## Pruning
+
+When CONTEXT.md crosses ~200 lines: promote design items to decisions/, empirical items to findings, delete stale entries. CONTEXT.md is alive, not a log.
+```
+
+Ask: "Add this rule to `.claude/rules/`? (yes/no)" If yes, create; if no, skip.
+
+---
+
+After both changes are applied (or skipped), report:
+
+```
+**Adoption complete: context**
+- CONTEXT.md: [created / skipped — already present / skipped — user declined]
+- context-discipline.md: [created / skipped — already present / skipped — user declined]
+- Next: the AI will now maintain CONTEXT.md inline during sessions. After /compact, run /charter-recover to restore orientation. Use /charter-remember "..." for explicit captures.
+```
