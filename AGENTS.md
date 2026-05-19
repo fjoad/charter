@@ -69,6 +69,8 @@ Standard report format:
 
 **Branch awareness (v0.2.0+):** On feature branches, `/charter-finish` updates only the branch plan, not STATUS.md component sections. The session-start hook surfaces the matching plan for the current branch (filename slug match or YAML frontmatter `branch:` key). See [docs/ARCHITECTURE.md § Branch Handling](docs/ARCHITECTURE.md#branch-handling) for the full design.
 
+**Testing:** `npm test` (or `bash scripts/verify-plugin.sh`) runs the fast 32-assertion suite — structural checks plus hook behavior in isolated tmpdirs. Before publishing a release, run `bash tests/e2e-install.sh` to spawn real Claude sessions with the local plugin and verify it actually loads (11 assertions across 4 scenarios, ~2 min, small token cost).
+
 ---
 
 ## Skills Available
