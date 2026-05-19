@@ -1,6 +1,6 @@
 # v0.3.0 — Working Memory / Context Recovery Plan
 
-**Status:** In progress (2026-05-12)
+**Status:** ✅ Complete (2026-05-12) — all tasks shipped, 44/44 tests pass, ready to merge.
 **Branch:** `feat/context-doc`
 
 **Goal:** Add `docs/CONTEXT.md` as a fourth doc category — the AI's working memory across compactions. AI maintains it inline during sessions; auto-loaded by session-start hook; restorable post-compaction via `/charter-recover`.
