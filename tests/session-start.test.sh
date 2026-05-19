@@ -119,3 +119,76 @@ assert_contains "$out" "/charter-adopt branches" "hint mentions the opt-in comma
 echo "  scenario: feature branch, plan matched by frontmatter"
 out=$(run_hook_in_temp setup_feature_branch_with_frontmatter_match)
 assert_contains "$out" "Branch Plan: 2026-05-12-totally-different-slug.md" "frontmatter match works"
+
+# --- Edge case tests ---
+
+setup_branch_with_dots() {
+  setup_main_with_status
+  git checkout -q -b feat/v0.2.0-hardening
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-v0-2-0-hardening.md <<EOF
+# Hardening Plan
+EOF
+}
+
+setup_branch_with_capitals() {
+  setup_main_with_status
+  git checkout -q -b feat/MIXED-Case-Branch
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-mixed-case-branch.md <<EOF
+# Mixed Case Plan
+EOF
+}
+
+setup_branch_with_short_tail_no_frontmatter() {
+  setup_main_with_status
+  git checkout -q -b feat/x
+  mkdir -p docs/plans
+  # Plan contains "x" but shouldn't match because branch slug is too short
+  cat > docs/plans/2026-05-12-extensive-refactor.md <<EOF
+# Extensive Refactor Plan
+EOF
+}
+
+setup_branch_with_short_tail_and_frontmatter() {
+  setup_main_with_status
+  git checkout -q -b feat/x
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-explicit-match.md <<EOF
+---
+branch: feat/x
+---
+
+# Explicit Match Plan
+EOF
+}
+
+setup_branch_with_multiple_slashes() {
+  setup_main_with_status
+  git checkout -q -b user/feat/branch-handling-extra
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-branch-handling-extra.md <<EOF
+# Multi-slash Plan
+EOF
+}
+
+echo "  scenario: branch with dots (v0.2.0)"
+out=$(run_hook_in_temp setup_branch_with_dots)
+assert_contains "$out" "Branch Plan: 2026-05-12-v0-2-0-hardening.md" "dots in branch tail slugify to dashes and match"
+
+echo "  scenario: branch with capitals"
+out=$(run_hook_in_temp setup_branch_with_capitals)
+assert_contains "$out" "Branch Plan: 2026-05-12-mixed-case-branch.md" "capitals are slugified to lowercase before matching"
+
+echo "  scenario: short branch tail, no frontmatter (false-positive guard)"
+out=$(run_hook_in_temp setup_branch_with_short_tail_no_frontmatter)
+assert_contains "$out" "No plan file detected for this branch" "min-length guard prevents single-char false positives"
+assert_not_contains "$out" "Branch Plan: 2026-05-12-extensive-refactor.md" "no spurious match on short branch slug"
+
+echo "  scenario: short branch tail, with frontmatter (explicit declaration wins)"
+out=$(run_hook_in_temp setup_branch_with_short_tail_and_frontmatter)
+assert_contains "$out" "Branch Plan: 2026-05-12-explicit-match.md" "frontmatter match works even when slug is too short"
+
+echo "  scenario: branch with multiple slashes (use last segment)"
+out=$(run_hook_in_temp setup_branch_with_multiple_slashes)
+assert_contains "$out" "Branch Plan: 2026-05-12-branch-handling-extra.md" "branch with multiple slashes matches on last segment"

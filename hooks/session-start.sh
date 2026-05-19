@@ -42,10 +42,10 @@ find_branch_plan() {
   local branch_tail="${branch##*/}"
   local branch_slug
   branch_slug=$(slugify "$branch_tail")
-  [[ -z "$branch_slug" ]] && return
 
   local plan
   # Rule 1: frontmatter match (against full branch name)
+  # Runs regardless of slug length, since frontmatter is an explicit declaration.
   for plan in docs/plans/*.md; do
     [[ -f "$plan" ]] || continue
     [[ "$(basename "$plan")" == "TEMPLATE.md" ]] && continue
@@ -55,7 +55,13 @@ find_branch_plan() {
     fi
   done
 
-  # Rule 2: filename contains branch slug (tail only)
+  # Rule 2: filename contains branch slug (tail only).
+  # Requires slug >= 3 chars to avoid false-positive matches (e.g., branch
+  # `feat/x` would otherwise match every plan filename containing 'x').
+  if [[ ${#branch_slug} -lt 3 ]]; then
+    return
+  fi
+
   for plan in docs/plans/*.md; do
     [[ -f "$plan" ]] || continue
     [[ "$(basename "$plan")" == "TEMPLATE.md" ]] && continue
