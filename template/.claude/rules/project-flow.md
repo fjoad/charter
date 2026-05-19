@@ -11,6 +11,7 @@ This project uses a layered system of docs and rules. Full map:
 - `testing.md` — what to test, test discipline
 
 **Read at session start (`docs/`):**
+- `docs/CONTEXT.md` — AI working memory across compactions (auto-loaded by session-start hook if present)
 - `docs/STATUS.md` — where we are, what's next (source of truth for progress)
 - `docs/ARCHITECTURE.md` — technical blueprint
 - `docs/VISION.md` — thesis, goals, non-goals, success criteria
@@ -61,3 +62,4 @@ Follow the mandatory finish checklist in `workflow.md`. This includes updating S
 | Why was a past decision made? | `docs/decisions/` |
 | Implementation plan for current step? | `docs/plans/` |
 | What skills to use when? | `.claude/rules/workflow.md` |
+| Mid-session learnings (post-compaction)? | `docs/CONTEXT.md` |

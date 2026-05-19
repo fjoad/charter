@@ -1,6 +1,6 @@
 # Charter — Architecture
 
-**Last updated:** 2026-05-12
+**Last updated:** 2026-05-12 (v0.3.0)
 
 ---
 
@@ -66,6 +66,28 @@ Classify this request as trivial/small/medium/major and apply matching ritual fr
 ```
 
 This fires silently. User doesn't see it. Claude applies it before responding.
+
+---
+
+## Working Memory (CONTEXT.md)
+
+Charter maintains a fourth doc category beyond STATUS / ARCHITECTURE / decisions: **`docs/CONTEXT.md`**, the AI's working memory across compactions.
+
+### Why
+
+Long Claude Code sessions hit `/compact`, discarding older messages. Without a persistent scratchpad, the AI either re-reads the entire transcript (wasteful — often >400k tokens) or re-derives environment quirks, working patterns, and "don't repeat" lessons. CONTEXT.md captures these inline as they surface, so post-compaction recovery is fast and cheap.
+
+### How
+
+1. **AI-maintained inline** per `.claude/rules/context-discipline.md`. The AI appends to CONTEXT.md whenever a non-obvious finding emerges — environment quirks, working patterns, don't-repeats, user emphases, mid-stream decisions. Entries are terse (1-2 lines).
+2. **Auto-loaded by `session-start.sh`** when `docs/CONTEXT.md` exists. Surfaces in the orient block before branch context and STATUS. Missing file → identical to today's behavior (capability detection).
+3. **`/charter-remember <text>`** — explicit capture command.
+4. **`/charter-recover`** — post-`/compact` re-orientation. Reads CONTEXT.md + STATUS.md + active branch plan; explicitly forbids re-reading the transcript or unrelated docs.
+5. **`/charter-adopt context`** — idempotent install of CONTEXT.md + the discipline rule into existing projects.
+
+### Alive, not a log
+
+The discipline rule says: when CONTEXT.md crosses ~200 lines, audit and prune. Promote design items to `decisions/`; promote empirical items to findings (or write one); delete entries that are now obvious or stale. CONTEXT.md is currently-active working memory — not a forever-growing journal.
 
 ---
 

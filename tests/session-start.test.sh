@@ -192,3 +192,51 @@ assert_contains "$out" "Branch Plan: 2026-05-12-explicit-match.md" "frontmatter 
 echo "  scenario: branch with multiple slashes (use last segment)"
 out=$(run_hook_in_temp setup_branch_with_multiple_slashes)
 assert_contains "$out" "Branch Plan: 2026-05-12-branch-handling-extra.md" "branch with multiple slashes matches on last segment"
+
+# --- CONTEXT.md / working memory tests ---
+
+setup_main_with_status_and_context() {
+  setup_main_with_status
+  cat > docs/CONTEXT.md <<EOF
+# Test Project — Working Memory
+
+## Environment Quirks
+
+- The mock server takes 8s to warm up after restart (don't retry sooner)
+
+## Working Patterns
+
+- Use \`make test-fast\` for unit tests, \`make test-all\` only before push
+EOF
+}
+
+setup_main_with_status_no_context() {
+  setup_main_with_status
+  # Explicit: no CONTEXT.md
+}
+
+setup_feature_branch_with_context() {
+  setup_main_with_status_and_context
+  git checkout -q -b feat/has-context
+  mkdir -p docs/plans
+  cat > docs/plans/2026-05-12-has-context.md <<EOF
+# Has Context Plan
+EOF
+}
+
+echo "  scenario: scaffold on main with CONTEXT.md"
+out=$(run_hook_in_temp setup_main_with_status_and_context)
+assert_contains "$out" "Working Memory" "Working Memory section header surfaces"
+assert_contains "$out" "mock server takes 8s" "CONTEXT.md content surfaces"
+assert_contains "$out" "make test-fast" "all CONTEXT.md sections surface"
+
+echo "  scenario: scaffold on main WITHOUT CONTEXT.md (backward compat)"
+out=$(run_hook_in_temp setup_main_with_status_no_context)
+assert_not_contains "$out" "Working Memory" "no Working Memory header when CONTEXT.md absent"
+assert_contains "$out" "Test Project Status" "STATUS.md still surfaces normally"
+
+echo "  scenario: feature branch with both CONTEXT.md and branch plan"
+out=$(run_hook_in_temp setup_feature_branch_with_context)
+assert_contains "$out" "Working Memory" "CONTEXT.md surfaces on feature branch too"
+assert_contains "$out" "On branch: feat/has-context" "branch context still works"
+assert_contains "$out" "Branch Plan: 2026-05-12-has-context.md" "branch plan still surfaces"

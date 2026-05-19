@@ -74,6 +74,30 @@ else
   assert_eq "present" "missing" "charter-adopt.md has branches convention block"
 fi
 
+if grep -q "Convention: \`context\`" "$REPO_DIR/commands/charter-adopt.md"; then
+  assert_eq "present" "present" "charter-adopt.md has context convention block"
+else
+  assert_eq "present" "missing" "charter-adopt.md has context convention block"
+fi
+
+if grep -q "categorize the content" "$REPO_DIR/commands/charter-remember.md" 2>/dev/null || grep -qi "Categorize" "$REPO_DIR/commands/charter-remember.md"; then
+  assert_eq "present" "present" "charter-remember.md has categorization step"
+else
+  assert_eq "present" "missing" "charter-remember.md has categorization step"
+fi
+
+if grep -q "Do NOT read" "$REPO_DIR/commands/charter-recover.md"; then
+  assert_eq "present" "present" "charter-recover.md forbids reading the transcript"
+else
+  assert_eq "present" "missing" "charter-recover.md forbids reading the transcript"
+fi
+
+if grep -q "CONTEXT.md" "$REPO_DIR/commands/charter-recover.md" && grep -q "STATUS.md" "$REPO_DIR/commands/charter-recover.md"; then
+  assert_eq "present" "present" "charter-recover.md has the recovery read order"
+else
+  assert_eq "present" "missing" "charter-recover.md has the recovery read order"
+fi
+
 # --- Version sync (also checked by verify-plugin.sh, but cheap to assert here) ---
 
 echo "  scenario: plugin and package versions match"

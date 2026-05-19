@@ -138,6 +138,21 @@ setup_feature_branch_no_plan() {
   git checkout -q -b feat/orphan-branch
 }
 
+setup_with_context() {
+  setup_main_with_status
+  cat > docs/CONTEXT.md <<EOF
+# Test Project — Working Memory
+
+## Environment Quirks
+
+- The mock service has a quirk that costs 5 minutes to figure out the hard way
+
+## Working Patterns
+
+- Use \`make warm-cache\` before \`make test-fast\` for a 4x speedup
+EOF
+}
+
 # --- Run scenarios ---
 
 run_scenario "Scenario A: fresh project, no Charter scaffold" setup_no_scaffold
@@ -158,6 +173,11 @@ run_scenario "Scenario D: on feature branch with no plan" setup_feature_branch_n
 assert_contains "$CTX" "On branch: feat/orphan-branch" "branch is named"
 assert_contains "$CTX" "No plan file detected for this branch" "soft hint appears"
 assert_contains "$CTX" "/charter-adopt branches" "hint points at the opt-in command"
+
+run_scenario "Scenario E: project with CONTEXT.md (v0.3.0)" setup_with_context
+assert_contains "$CTX" "Working Memory" "Working Memory section surfaces"
+assert_contains "$CTX" "mock service has a quirk" "CONTEXT.md content surfaces in real claude session"
+assert_contains "$CTX" "make warm-cache" "all CONTEXT.md sections surface"
 
 # --- Summary ---
 echo ""

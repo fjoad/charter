@@ -65,6 +65,8 @@ Or for an existing project:
 
 **Branch-aware workflows (v0.2.0+):** Feature branches get their own plan; the finish ritual adapts; STATUS.md stays conflict-free on merge. Backward compatible — existing projects keep working unchanged after update.
 
+**Working memory across compactions (v0.3.0+):** `docs/CONTEXT.md` is the AI's working scratchpad — environment quirks, working patterns, don't-repeats, user emphases. Auto-loaded at session start. After `/compact`, `/charter-recover` restores orientation without re-scanning the transcript. Opt-in via `/charter-adopt context`.
+
 ---
 
 ## Commands
@@ -75,7 +77,9 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 |---------|---------------|
 | `/charter-init` | Once, to bootstrap a new project |
 | `/charter-attach` | Once, to attach Charter to an existing project |
-| `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches`) |
+| `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches` or `/charter-adopt context`) |
+| `/charter-remember` | Capture something to `docs/CONTEXT.md` so it survives `/compact` |
+| `/charter-recover` | After `/compact`, restore orientation from CONTEXT.md + STATUS.md + branch plan (skip the transcript) |
 | `/charter-next` | Explicitly start the next step (Charter will nudge you anyway) |
 | `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) — adapts to main vs feature branch |
 | `/charter-cost` | See how many tokens Charter has added this session |

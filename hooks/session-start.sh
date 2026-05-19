@@ -81,6 +81,18 @@ is_main_branch() {
 
 STATUS_CONTENT=$(cat "$STATUS_FILE")
 
+# Working memory block (empty unless docs/CONTEXT.md exists)
+CONTEXT_BLOCK=""
+if [[ -f "docs/CONTEXT.md" ]]; then
+  CONTEXT_BLOCK="
+## Working Memory
+
+$(cat docs/CONTEXT.md)
+
+---
+"
+fi
+
 # Branch context block (empty unless on a feature branch)
 BRANCH_BLOCK=""
 PLAN_CONTENT=""
@@ -127,7 +139,7 @@ ORIENT=$(cat <<ORIENT
 ## Charter: Project Orientation
 
 You are starting a session in a Charter-managed project. Read the following before responding.
-${BRANCH_BLOCK}
+${CONTEXT_BLOCK}${BRANCH_BLOCK}
 ### Project Status
 
 ${STATUS_CONTENT}
