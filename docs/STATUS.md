@@ -23,7 +23,8 @@
 | Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
 | Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
 | Branch handling | Done (v0.2.0) | `hooks/`, `commands/`, `template/`, `tests/` | Merged 2026-05-12 — see [decision](decisions/2026-05-12-branch-handling.md) and [plan](plans/2026-05-12-branch-handling.md) |
-| Test harness | Done (v0.2.0) | `tests/`, `scripts/verify-plugin.sh` | Shell-based test runner; 13 assertions for session-start.sh behavior |
+| Test harness | Done (v0.2.0) | `tests/`, `scripts/verify-plugin.sh` | Shell-based test runner; 32 assertions across session-start, turn-nudge, and plugin-structure |
+| CI | Done (v0.2.0) | `.github/workflows/test.yml` | GitHub Actions runs verify-plugin.sh on push to main + PRs |
 
 ---
 

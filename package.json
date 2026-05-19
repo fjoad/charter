@@ -8,5 +8,8 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/fjoad/charter"
+  },
+  "scripts": {
+    "test": "bash scripts/verify-plugin.sh"
   }
 }
