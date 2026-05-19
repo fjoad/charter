@@ -235,3 +235,29 @@ Invoke the brief-intake skill to gather vision, then scaffold the Charter templa
 **Add a new skill:** Create `skills/<name>/SKILL.md` with proper frontmatter.
 
 **Add a new opt-in convention:** Extend `commands/charter-adopt.md` with a new convention block. Each convention should: detect whether it's already adopted, propose changes to user files one at a time, ask before each, report what changed.
+
+---
+
+## Testing
+
+Two tiers of tests live in `tests/`:
+
+### Structural + unit (`scripts/verify-plugin.sh`)
+
+Runs on every commit (via CI) and locally with `npm test`. Fast (~1s). Covers:
+
+- Plugin file structure (commands are `.md` with frontmatter, no `{{args}}`, version sync)
+- `hooks/session-start.sh` and `hooks/turn-nudge.sh` behavior in isolated tmpdirs (32 assertions)
+- JSON validity of `plugin.json`, `package.json`, `hooks.json`
+- Hook command paths reference real files
+- Required content in `commands/*.md`
+
+### End-to-end install (`tests/e2e-install.sh`)
+
+Spawns 4 real `claude -p --plugin-dir <local-charter>` sessions, each in a fresh tmpdir, and asserts on the SessionStart hook's `additionalContext` output. This is the only test that verifies the plugin actually loads into Claude Code. Slow (~30s per scenario) and costs a small amount in API tokens, so it is **not** run by `verify-plugin.sh` automatically — run it manually before publishing a release:
+
+```bash
+bash tests/e2e-install.sh
+```
+
+11 assertions cover: no-scaffold hint, main-branch orient, feature-branch matching plan, feature-branch no-plan soft hint.
