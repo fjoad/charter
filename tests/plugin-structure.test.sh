@@ -98,6 +98,30 @@ else
   assert_eq "present" "missing" "charter-recover.md has the recovery read order"
 fi
 
+if [[ -f "$REPO_DIR/commands/charter-replay.md" ]]; then
+  assert_eq "present" "present" "charter-replay.md exists"
+else
+  assert_eq "present" "missing" "charter-replay.md exists"
+fi
+
+if grep -q "session-dialog.txt" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-replay.md has the filter pipeline"
+else
+  assert_eq "present" "missing" "charter-replay.md has the filter pipeline"
+fi
+
+if grep -q "replace every \`/\` with \`-\`" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-replay.md explains session-dir encoding"
+else
+  assert_eq "present" "missing" "charter-replay.md explains session-dir encoding"
+fi
+
+if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-recover.md mentions charter-replay as tier-2 fallback"
+else
+  assert_eq "present" "missing" "charter-recover.md mentions charter-replay as tier-2 fallback"
+fi
+
 # --- Version sync (also checked by verify-plugin.sh, but cheap to assert here) ---
 
 echo "  scenario: plugin and package versions match"
