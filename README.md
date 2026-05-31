@@ -67,6 +67,8 @@ Or for an existing project:
 
 **Working memory across compactions (v0.3.0+):** `docs/CONTEXT.md` is the AI's working scratchpad — environment quirks, working patterns, don't-repeats, user emphases. Auto-loaded at session start. After `/compact`, `/charter-recover` restores orientation without re-scanning the transcript. Opt-in via `/charter-adopt context`.
 
+**Three-tier recovery model (v0.4.0+):** `/charter-recover` (CONTEXT.md only, cheapest) → `/charter-replay` (dialogue-filtered transcript, medium) → raw transcript read (anti-pattern, never the right answer). The replay command's prompt is also useful as a standalone instruction in non-Charter sessions.
+
 ---
 
 ## Commands
@@ -80,6 +82,7 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 | `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches` or `/charter-adopt context`) |
 | `/charter-remember` | Capture something to `docs/CONTEXT.md` so it survives `/compact` |
 | `/charter-recover` | After `/compact`, restore orientation from CONTEXT.md + STATUS.md + branch plan (skip the transcript) |
+| `/charter-replay` | Tier-2 recovery — reads the dialogue-only filter of the session transcript when `/charter-recover` isn't enough |
 | `/charter-next` | Explicitly start the next step (Charter will nudge you anyway) |
 | `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) — adapts to main vs feature branch |
 | `/charter-cost` | See how many tokens Charter has added this session |

@@ -73,6 +73,8 @@ Standard report format:
 
 **Working memory (v0.3.0+):** `docs/CONTEXT.md` is the AI's working memory across compactions. Maintained inline per `.claude/rules/context-discipline.md` whenever a non-obvious finding surfaces. Auto-loaded by `session-start.sh`. After `/compact`, run `/charter-recover` to restore orientation from CONTEXT.md + STATUS.md + active branch plan, *without* re-reading the transcript. Use `/charter-remember "..."` for explicit captures. See [docs/ARCHITECTURE.md § Working Memory](docs/ARCHITECTURE.md#working-memory-contextmd).
 
+**Tier-2 recovery (v0.4.0+):** If `/charter-recover` isn't enough (CONTEXT.md was sparse, the user emphasized something not captured, etc.), `/charter-replay` reads the session's JSONL filtered to user-text + assistant-text only — no tool I/O. Typically 5–10× smaller than the raw transcript. Never read the raw `.jsonl` directly; that's tier-3 and a documented anti-pattern.
+
 ---
 
 ## Skills Available

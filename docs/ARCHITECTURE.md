@@ -85,6 +85,20 @@ Long Claude Code sessions hit `/compact`, discarding older messages. Without a p
 4. **`/charter-recover`** — post-`/compact` re-orientation. Reads CONTEXT.md + STATUS.md + active branch plan; explicitly forbids re-reading the transcript or unrelated docs.
 5. **`/charter-adopt context`** — idempotent install of CONTEXT.md + the discipline rule into existing projects.
 
+### Three-tier recovery model (v0.4.0)
+
+When the user runs `/compact`, the AI picks the cheapest viable recovery tier:
+
+| Tier | Command | Reads | Cost |
+|---|---|---|---|
+| 1 | `/charter-recover` | CONTEXT.md + STATUS.md + active branch plan | cheapest |
+| 2 | `/charter-replay` | filtered session transcript (user + assistant text, no tool I/O) | medium |
+| 3 | (no command) | raw .jsonl | anti-pattern — 400k+ tokens of tool noise |
+
+Tier 1 assumes the context-discipline rule was followed during the session. Tier 2 is the safety net when CONTEXT.md is sparse, stale, or missing nuance. Tier 3 is what burned hundreds of thousands of tokens in real cases; documented as something to avoid, not a Charter command.
+
+`/charter-replay` finds the session JSONL via the convention `~/.claude/projects/<encoded-cwd>/*.jsonl` (cwd `/` → `-`), pipes through a Python filter that keeps `type=user` / `type=assistant` entries with only `{type:"text"}` content blocks, writes to `/tmp/session-dialog.txt`, reads that.
+
 ### Alive, not a log
 
 The discipline rule says: when CONTEXT.md crosses ~200 lines, audit and prune. Promote design items to `decisions/`; promote empirical items to findings (or write one); delete entries that are now obvious or stale. CONTEXT.md is currently-active working memory — not a forever-growing journal.

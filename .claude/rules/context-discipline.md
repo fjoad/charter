@@ -31,6 +31,16 @@ Good: `Llama: never use apply_chat_template — adds <|begin_of_text|> + date pr
 
 Capture anything important to CONTEXT.md *before* it's lost. `/charter-remember "..."` is the explicit version.
 
+## Three-tier recovery model (post-/compact)
+
+When the user runs `/compact` and you need to restore context, use the cheapest tier that works:
+
+1. **`/charter-recover`** — reads CONTEXT.md + STATUS.md + active branch plan. Use first.
+2. **`/charter-replay`** — reads the dialogue-only filter of this session's transcript (user turns + your text replies, no tool I/O). Use when CONTEXT.md is sparse.
+3. **Reading the raw .jsonl** — almost never right; what burned 400k+ tokens in a real case before. Treat as anti-pattern.
+
+If CONTEXT.md was well-maintained during the session, tier 1 is sufficient. The discipline above is what makes tier 1 work; without it, you'll end up at tier 2.
+
 ## Pruning
 
 When CONTEXT.md crosses ~200 lines: promote design items to decisions/, empirical items to findings, delete stale entries. CONTEXT.md is alive, not a log.

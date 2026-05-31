@@ -2,7 +2,7 @@
 
 <!-- AI working memory across compactions. Maintained inline per .claude/rules/context-discipline.md. Run /charter-recover after /compact. Keep entries terse. -->
 
-**Last updated:** 2026-05-12
+**Last updated:** 2026-05-12 (v0.4.0)
 
 ---
 
@@ -14,6 +14,9 @@
 
 ## Working Patterns
 
+- **Three-tier post-/compact recovery:** `/charter-recover` (CONTEXT.md only, cheapest) → `/charter-replay` (filtered transcript, medium) → never read the raw .jsonl (anti-pattern). Each tier loaded into both context-discipline rule files (project + template) so the discipline travels.
+- **JSONL transcript filter (the heart of /charter-replay):** pipe the session JSONL through Python that keeps `type=user`/`type=assistant` entries and extracts only `{type:"text"}` content blocks, dropping tool_use / tool_result / system reminders. Writes to /tmp/session-dialog.txt. Typically 5-10x smaller than the raw transcript.
+- **Session JSONL location convention:** `~/.claude/projects/<encoded-cwd>/<session-uuid>.jsonl` where encoded-cwd replaces `/` with `-`. Most-recently-modified `.jsonl` in that dir is the current session.
 - **E2E plugin install test:** `claude -p "say READY" --plugin-dir <local-charter-path> --output-format=stream-json --include-hook-events --verbose --no-session-persistence --setting-sources user`. Parses stream-json for `hook_response` events; extracts `additionalContext` from each. Run with no timeout on macOS.
 - **Branch-plan slug matching (in `hooks/session-start.sh`):** Use tail after last `/` for branch slug. Require slug ≥ 3 chars to avoid false-positive matches. YAML frontmatter `branch: <name>` always takes precedence regardless of slug length.
 - **Backward-compat pattern:** capability detection, not version coupling. Plugin checks for optional structures (CONTEXT.md, In-flight Branches section, branch-named plan file); missing → today's behavior. New behavior activates only when structures present. Used for v0.2.0 branches and v0.3.0 context — same playbook.

@@ -1,6 +1,6 @@
 # v0.4.0 — /charter-replay (Tier-2 Recovery)
 
-**Status:** In progress (2026-05-12)
+**Status:** ✅ Complete (2026-05-12) — shipped, 48/48 fast + 14/14 e2e tests pass, ready to merge.
 **Branch:** `feat/replay-command`
 
 **Goal:** Add `/charter-replay` — dialogue-only transcript replay for context recovery when CONTEXT.md isn't enough. Fills the missing middle tier between `/charter-recover` (CONTEXT.md only, cheapest) and a full transcript re-read (most expensive, almost never right).
