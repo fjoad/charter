@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-05-12 (v0.4.0 in progress)  
+**Last updated:** 2026-05-12 (v0.4.0 shipped)  
 **Current branch:** `main`
 
 ---
@@ -43,7 +43,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-- `feat/replay-command` → [docs/plans/2026-05-12-replay-command.md](plans/2026-05-12-replay-command.md) — v0.4.0 tier-2 recovery, in progress
+_None active._
 
 ---
 
@@ -69,7 +69,8 @@
 2. ~~v0.1.1 fix complete — commands verified, docs updated, pushed~~ (done)
 3. ~~Branch handling (v0.2.0) — merged + pushed + tagged 2026-05-12~~ (done)
 4. ~~Working memory / CONTEXT.md (v0.3.0) — merged + pushed + tagged 2026-05-12~~ (done)
-5. **Tier-2 recovery / /charter-replay (v0.4.0)** **(current — feat/replay-command)**
-6. Await marketplace review acceptance
-7. Update install instructions once marketplace accepted
-8. Monitor for user feedback and bug reports
+5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged 2026-05-12~~ (done)
+6. **Push v0.4.0 to GitHub + tag** **(current)**
+7. Await marketplace review acceptance
+8. Update install instructions once marketplace accepted
+9. Monitor for user feedback and bug reports
