@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-04 (v0.5.0 in progress)  
+**Last updated:** 2026-06-04 (v0.5.0 shipped)  
 **Current branch:** `main`
 
 ---
@@ -44,7 +44,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-- `feat/preview-and-context-per-branch` → [docs/plans/2026-06-04-preview-and-context-per-branch.md](plans/2026-06-04-preview-and-context-per-branch.md) — v0.5.0 in progress
+_None active._
 
 ---
 
@@ -73,8 +73,8 @@
 4. ~~Working memory / CONTEXT.md (v0.3.0) — merged + pushed + tagged 2026-05-12~~ (done)
 5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged + pushed + tagged 2026-05-12~~ (done)
 6. ~~Branch-cleanup finish-ritual patch (v0.4.1) — merged + pushed + tagged 2026-06-04~~ (done)
-7. **Preview + CONTEXT-per-branch articulation (v0.5.0)** **(current — feat/preview-and-context-per-branch)**
-8. Think through monorepo support (v2+ scope) — design pass only, no build
+7. ~~Preview + CONTEXT-per-branch articulation (v0.5.0) — merged 2026-06-04~~ (done)
+8. **Think through monorepo support (v2+ scope) — design pass only, no build** **(current)**
 9. Await marketplace review acceptance
 10. Update install instructions once marketplace accepted
 11. Monitor for user feedback and bug reports
