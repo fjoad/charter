@@ -1,6 +1,6 @@
 # v0.5.0 — /charter-preview + CONTEXT-per-branch articulation
 
-**Status:** In progress
+**Status:** ✅ Complete — 54/54 tests pass, ready to merge
 **Branch:** `feat/preview-and-context-per-branch`
 
 **Goal:** Two small, related additions, no architectural change.

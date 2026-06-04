@@ -103,6 +103,16 @@ Tier 1 assumes the context-discipline rule was followed during the session. Tier
 
 The discipline rule says: when CONTEXT.md crosses ~200 lines, audit and prune. Promote design items to `decisions/`; promote empirical items to findings (or write one); delete entries that are now obvious or stale. CONTEXT.md is currently-active working memory — not a forever-growing journal.
 
+### CONTEXT.md is already per-branch (v0.3.0+, articulated v0.5.0)
+
+CONTEXT.md is a tracked file in `docs/`, so it travels with the branch like any other file. This means **each feature branch has its own working memory**, distinct from main's:
+
+- A learning discovered while working on `feat/X` goes into `feat/X`'s CONTEXT.md. It does not pollute main's CONTEXT.md until merge.
+- On merge to main, CONTEXT.md merges like any other file. Usually you keep entries that are generally useful and drop branch-specific ones during the merge or right after via prune.
+- **CONTEXT.md edits ARE allowed on feature branches** — unlike STATUS.md component sections. CONTEXT is branch-scoped working memory; STATUS is canonical project state. Different roles, different rules.
+
+This was implicit in the v0.3.0 design (CONTEXT.md is just a file, files live on branches) but never said out loud. Documented here so the branch discipline rule and finish ritual are unambiguous.
+
 ---
 
 ## Branch Handling

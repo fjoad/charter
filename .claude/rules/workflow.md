@@ -58,3 +58,10 @@ When a significant design choice is made during implementation (not just brainst
 - **If a step fails, use `systematic-debugging` skill** before guessing at fixes.
 - **If tasks are independent, use `subagent-driven-development`** to run them concurrently.
 - **The finish checklist is not optional.** If the user has to ask "did you update the docs?" — you failed.
+
+## Branch Discipline
+
+On feature branches:
+- Edit only your branch's plan file in `docs/plans/`
+- Do NOT edit STATUS.md Component Status, What to Work On Next, or Recent Decisions sections (those update only on merge to main)
+- **CONTEXT.md edits ARE allowed on feature branches.** It's branch-scoped working memory — each branch has its own. Capture freely; prune branch-specific entries on merge.
