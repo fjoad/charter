@@ -122,6 +122,42 @@ else
   assert_eq "present" "missing" "charter-recover.md mentions charter-replay as tier-2 fallback"
 fi
 
+if [[ -f "$REPO_DIR/commands/charter-preview.md" ]]; then
+  assert_eq "present" "present" "charter-preview.md exists"
+else
+  assert_eq "present" "missing" "charter-preview.md exists"
+fi
+
+if grep -q "Never write a file" "$REPO_DIR/commands/charter-preview.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-preview.md has the no-write hard rule"
+else
+  assert_eq "present" "missing" "charter-preview.md has the no-write hard rule"
+fi
+
+if grep -q "NEW" "$REPO_DIR/commands/charter-preview.md" && grep -q "EXISTS" "$REPO_DIR/commands/charter-preview.md"; then
+  assert_eq "present" "present" "charter-preview.md uses NEW/EXISTS marking"
+else
+  assert_eq "present" "missing" "charter-preview.md uses NEW/EXISTS marking"
+fi
+
+if grep -q "CONTEXT.md edits ARE allowed on feature branches" "$REPO_DIR/.claude/rules/workflow.md" 2>/dev/null; then
+  assert_eq "present" "present" "Charter's workflow.md states CONTEXT.md is allowed on branches"
+else
+  assert_eq "present" "missing" "Charter's workflow.md states CONTEXT.md is allowed on branches"
+fi
+
+if grep -q "CONTEXT.md edits ARE allowed on feature branches" "$REPO_DIR/template/.claude/rules/workflow.md" 2>/dev/null; then
+  assert_eq "present" "present" "template workflow.md states CONTEXT.md is allowed on branches"
+else
+  assert_eq "present" "missing" "template workflow.md states CONTEXT.md is allowed on branches"
+fi
+
+if grep -q "CONTEXT.md.* updates ARE allowed" "$REPO_DIR/commands/charter-finish.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-finish.md feature-branch flow permits CONTEXT.md updates"
+else
+  assert_eq "present" "missing" "charter-finish.md feature-branch flow permits CONTEXT.md updates"
+fi
+
 # --- Version sync (also checked by verify-plugin.sh, but cheap to assert here) ---
 
 echo "  scenario: plugin and package versions match"

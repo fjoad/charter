@@ -14,6 +14,8 @@
 
 ## Working Patterns
 
+- **CONTEXT.md is branch-scoped working memory by design.** Each feature branch has its own. On merge to main, prune branch-specific entries that don't generalize. Articulated explicitly in v0.5.0 (ARCHITECTURE.md § Working Memory + Branch Discipline rules).
+- **`/charter-preview <mode>` for dry-run.** Before `/charter-init` or `/charter-attach` writes anything, `/charter-preview attach` lists every candidate file from `template/` and marks each NEW or EXISTS. Use when evaluating Charter on a new project.
 - **Three-tier post-/compact recovery:** `/charter-recover` (CONTEXT.md only, cheapest) → `/charter-replay` (filtered transcript, medium) → never read the raw .jsonl (anti-pattern). Each tier loaded into both context-discipline rule files (project + template) so the discipline travels.
 - **JSONL transcript filter (the heart of /charter-replay):** pipe the session JSONL through Python that keeps `type=user`/`type=assistant` entries and extracts only `{type:"text"}` content blocks, dropping tool_use / tool_result / system reminders. Writes to /tmp/session-dialog.txt. Typically 5-10x smaller than the raw transcript.
 - **Session JSONL location convention:** `~/.claude/projects/<encoded-cwd>/<session-uuid>.jsonl` where encoded-cwd replaces `/` with `-`. Most-recently-modified `.jsonl` in that dir is the current session.
@@ -29,6 +31,7 @@
 - **Don't put `\textcolor{violet}{...}` around a multi-page block in LaTeX** (analog from another project, noted as a general rule). For colored regions spanning floats/sections, use `\begingroup\color{violet}` ... `\endgroup`.
 - **Don't leave merged feature branches dangling locally.** After `git merge --no-ff feat/x` to main + push, run `git branch -d feat/x` immediately. v0.2.0–v0.4.0 finish rituals missed this; ended up with 5 stale local-only branch refs that confused a sibling Charter session. Fixed in workflow.md + charter-finish.md as of v0.4.1.
 - **Nested triple-backtick code blocks break markdown rendering.** When sharing a prompt that contains a code fence, use ONE outer fence with the inner code as indented plain text (no second fence). Otherwise the inner fence prematurely closes the outer one and the second half spills as raw text.
+- **Don't attach Charter on a feature branch as the first install.** Charter's canonical docs are designed to live on main; attaching on a branch inverts the topology and makes `main` look unconfigured until merge. Correct sequence: attach on main → switch to feature branch → branch inherits scaffold via merge-base. Surfaced by a sibling Charter session evaluating Charter on ProactiveAgents.
 
 ## Open Questions
 

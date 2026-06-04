@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-05-12 (v0.4.0 shipped)  
+**Last updated:** 2026-06-04 (v0.5.0 in progress)  
 **Current branch:** `main`
 
 ---
@@ -28,6 +28,7 @@
 | E2E install test | Done (v0.2.0) | `tests/e2e-install.sh` | Spawns real `claude -p` sessions, verifies plugin loads + hook fires; 11 assertions, run manually before release (not in CI — costs tokens) |
 | Working memory (CONTEXT.md) | Done (v0.3.0) | `template/`, `hooks/`, `commands/`, `.claude/rules/` | AI-maintained working memory across compactions; auto-loaded by session-start; `/charter-remember` + `/charter-recover` + opt-in `/charter-adopt context`. Merged 2026-05-12. |
 | Tier-2 recovery (/charter-replay) | Done (v0.4.0) | `commands/`, `.claude/rules/` | Filtered-transcript recovery for when CONTEXT.md isn't enough. Three-tier model documented. |
+| Preview command + CONTEXT-per-branch articulation | Done (v0.5.0) | `commands/charter-preview.md`, `docs/ARCHITECTURE.md`, rules | Dry-run for init/attach/adopt-*. CONTEXT.md branch-scoped behavior made explicit. |
 
 ---
 
@@ -43,7 +44,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-_None active._
+- `feat/preview-and-context-per-branch` → [docs/plans/2026-06-04-preview-and-context-per-branch.md](plans/2026-06-04-preview-and-context-per-branch.md) — v0.5.0 in progress
 
 ---
 
@@ -51,6 +52,7 @@ _None active._
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-06-04 | /charter-preview + CONTEXT-per-branch articulation | Dry-run UX for evaluation; clarifies CONTEXT.md is allowed on feature branches unlike STATUS sections (see decisions/2026-06-04-preview-and-context-per-branch.md) |
 | 2026-05-12 | /charter-replay tier-2 recovery | Filtered-transcript fallback for when CONTEXT.md is sparse; bridges tier-1 (cheap) and full-transcript (anti-pattern) (see decisions/2026-05-12-replay-command.md) |
 | 2026-05-12 | Working memory doc (CONTEXT.md) | AI scratchpad across compactions, auto-loaded; same capability-detection backward-compat (see decisions/2026-05-12-context-doc.md) |
 | 2026-05-12 | Branch handling via capability detection | Backward-compat, opt-in, plans-as-branch-unit (see decisions/2026-05-12-branch-handling.md) |
@@ -69,8 +71,10 @@ _None active._
 2. ~~v0.1.1 fix complete — commands verified, docs updated, pushed~~ (done)
 3. ~~Branch handling (v0.2.0) — merged + pushed + tagged 2026-05-12~~ (done)
 4. ~~Working memory / CONTEXT.md (v0.3.0) — merged + pushed + tagged 2026-05-12~~ (done)
-5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged 2026-05-12~~ (done)
-6. **Push v0.4.0 to GitHub + tag** **(current)**
-7. Await marketplace review acceptance
-8. Update install instructions once marketplace accepted
-9. Monitor for user feedback and bug reports
+5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged + pushed + tagged 2026-05-12~~ (done)
+6. ~~Branch-cleanup finish-ritual patch (v0.4.1) — merged + pushed + tagged 2026-06-04~~ (done)
+7. **Preview + CONTEXT-per-branch articulation (v0.5.0)** **(current — feat/preview-and-context-per-branch)**
+8. Think through monorepo support (v2+ scope) — design pass only, no build
+9. Await marketplace review acceptance
+10. Update install instructions once marketplace accepted
+11. Monitor for user feedback and bug reports

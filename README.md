@@ -83,6 +83,7 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 | `/charter-remember` | Capture something to `docs/CONTEXT.md` so it survives `/compact` |
 | `/charter-recover` | After `/compact`, restore orientation from CONTEXT.md + STATUS.md + branch plan (skip the transcript) |
 | `/charter-replay` | Tier-2 recovery — reads the dialogue-only filter of the session transcript when `/charter-recover` isn't enough |
+| `/charter-preview` | Dry-run for `init` / `attach` / `adopt-*` — lists what would be scaffolded without writing anything |
 | `/charter-next` | Explicitly start the next step (Charter will nudge you anyway) |
 | `/charter-finish` | Explicitly run the finish ritual (Charter will remind you anyway) — adapts to main vs feature branch |
 | `/charter-cost` | See how many tokens Charter has added this session |
