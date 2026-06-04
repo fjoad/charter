@@ -27,6 +27,8 @@
 - **Bash heredoc `<<'PY'` overrides pipes to the same command.** `printf '%s' "$raw" | python3 <<'PY' ... PY` → the heredoc wins; python's stdin is the script, not the piped data. Use `python3 -c "$(cat <<'PY' ... PY)"` instead, or save script to a file.
 - **Python `return` at top level → SyntaxError.** Heredoc-style python scripts need a `def`-wrap or use `sys.exit()` / `break` for early termination.
 - **Don't put `\textcolor{violet}{...}` around a multi-page block in LaTeX** (analog from another project, noted as a general rule). For colored regions spanning floats/sections, use `\begingroup\color{violet}` ... `\endgroup`.
+- **Don't leave merged feature branches dangling locally.** After `git merge --no-ff feat/x` to main + push, run `git branch -d feat/x` immediately. v0.2.0–v0.4.0 finish rituals missed this; ended up with 5 stale local-only branch refs that confused a sibling Charter session. Fixed in workflow.md + charter-finish.md as of v0.4.1.
+- **Nested triple-backtick code blocks break markdown rendering.** When sharing a prompt that contains a code fence, use ONE outer fence with the inner code as indented plain text (no second fence). Otherwise the inner fence prematurely closes the outer one and the second half spills as raw text.
 
 ## Open Questions
 

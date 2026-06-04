@@ -30,7 +30,12 @@ Run the mandatory finish checklist from `.claude/rules/workflow.md`:
 3. Update `docs/ARCHITECTURE.md` if the architecture changed from what was planned
 4. Update `AGENTS.md` if project setup changed (new commands, new dependencies, etc.)
 5. Commit all changes with a descriptive message
-6. Report in this exact format:
+6. **If a feature branch was just merged into main as part of this finish, delete the local branch:**
+   ```bash
+   git branch -d feat/<name>
+   ```
+   `-d` (lowercase) refuses to delete if anything isn't fully merged, so it's safe. The merge commit preserves the work in history. Skipping this leaves stale local labels that confuse future sessions and `git branch` output.
+7. Report in this exact format:
 
 ```
 **Step complete: [step name]**
