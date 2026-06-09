@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-09 (v0.5.1 in progress)  
+**Last updated:** 2026-06-09 (v0.5.1 shipped)  
 **Current branch:** `main`
 
 ---
@@ -45,7 +45,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-- `feat/replay-filter-hardening` → [docs/plans/2026-06-09-replay-filter-hardening.md](plans/2026-06-09-replay-filter-hardening.md) — v0.5.1 in progress
+_None active._
 
 ---
 
@@ -76,8 +76,8 @@
 5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged + pushed + tagged 2026-05-12~~ (done)
 6. ~~Branch-cleanup finish-ritual patch (v0.4.1) — merged + pushed + tagged 2026-06-04~~ (done)
 7. ~~Preview + CONTEXT-per-branch articulation (v0.5.0) — merged 2026-06-04~~ (done)
-8. ~~Replay filter hardening (v0.5.1)~~ (in progress — see plan)
-9. Consider `/charter-help` command (discoverability — 3 sibling sessions have rebuilt existing features)
+8. ~~Replay filter hardening (v0.5.1) — merged 2026-06-09~~ (done)
+9. **Consider `/charter-help` command (discoverability — 3 sibling sessions have rebuilt existing features)** **(current candidate)**
 10. Think through monorepo support (v2+ scope) — design pass only, no build
 11. Await marketplace review acceptance
 12. Update install instructions once marketplace accepted
