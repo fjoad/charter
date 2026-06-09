@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-09 (v0.7.0 in progress)  
+**Last updated:** 2026-06-09 (v0.7.0 shipped)  
 **Current branch:** `main`
 
 ---
@@ -47,7 +47,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-- `feat/replay-self-contained` → [docs/plans/2026-06-09-replay-self-contained.md](plans/2026-06-09-replay-self-contained.md) — v0.7.0 in progress
+_None active._
 
 ---
 
@@ -82,7 +82,7 @@
 7. ~~Preview + CONTEXT-per-branch articulation (v0.5.0) — merged 2026-06-04~~ (done)
 8. ~~Replay filter hardening (v0.5.1) — merged 2026-06-09~~ (done)
 9. ~~`/charter-help` + AI-facing discoverability (v0.6.0) — merged 2026-06-09~~ (done)
-10. ~~Self-contained replay-filter (v0.7.0)~~ (in progress — see plan)
+10. ~~Self-contained replay-filter (v0.7.0) — merged 2026-06-09~~ (done)
 11. **Think through monorepo support (v2+ scope) — design pass only, no build** **(current)**
 11. Await marketplace review acceptance
 12. Update install instructions once marketplace accepted
