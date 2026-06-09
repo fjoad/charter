@@ -77,6 +77,7 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 
 | Command | When to use it |
 |---------|---------------|
+| `/charter-help` | List everything Charter offers — commands, conventions, recovery tiers |
 | `/charter-init` | Once, to bootstrap a new project |
 | `/charter-attach` | Once, to attach Charter to an existing project |
 | `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches` or `/charter-adopt context`) |

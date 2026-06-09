@@ -128,6 +128,29 @@ else
   assert_eq "present" "missing" "replay-filter.py handles interrupt + compaction injections"
 fi
 
+# --- /charter-help freshness: every command must be referenced in the help catalog ---
+
+echo "  scenario: charter-help references every command (anti-staleness)"
+HELP="$REPO_DIR/commands/charter-help.md"
+if [[ -f "$HELP" ]]; then
+  assert_eq "present" "present" "charter-help.md exists"
+  missing_from_help=""
+  for cmd in "$REPO_DIR"/commands/*.md; do
+    name=$(basename "$cmd" .md)
+    [[ "$name" == "charter-help" ]] && continue
+    if ! grep -q "/$name" "$HELP"; then
+      missing_from_help="$missing_from_help $name"
+    fi
+  done
+  if [[ -z "$missing_from_help" ]]; then
+    assert_eq "synced" "synced" "every command is listed in /charter-help"
+  else
+    assert_eq "synced" "MISSING:$missing_from_help" "every command is listed in /charter-help"
+  fi
+else
+  assert_eq "present" "missing" "charter-help.md exists"
+fi
+
 if grep -q "replace every \`/\` with \`-\`" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-replay.md explains session-dir encoding"
 else
