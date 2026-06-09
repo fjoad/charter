@@ -35,6 +35,7 @@
 - **Don't attach Charter on a feature branch as the first install.** Charter's canonical docs are designed to live on main; attaching on a branch inverts the topology and makes `main` look unconfigured until merge. Correct sequence: attach on main → switch to feature branch → branch inherits scaffold via merge-base. Surfaced by a sibling Charter session evaluating Charter on ProactiveAgents.
 - **Sibling sessions keep rebuilding Charter features (3rd time: branch-cleanup→v0.4.1, replay-filter→v0.5.1).** Root cause is DISCOVERABILITY — people don't know a command exists, or run an old cached Charter version. FIXED in v0.6.0: `/charter-help` catalog + an AI-facing pointer in the session-start orient block ("check /charter-help before building recovery/branch/context tooling"). If rebuilds continue, next hypothesis is version staleness (old cached plugin) → consider scripts/dev-install.sh.
 - **`/charter-help` is curated, kept in sync by a test.** A plugin-structure assertion fails if any `commands/*.md` isn't referenced in charter-help.md. Add new commands to the catalog or CI breaks.
+- **To refresh/iterate the plugin, never hand-edit `~/.claude/plugins/*.json`.** A sibling session did JSON surgery to force an update and hit a malformed-timestamp bug (`date %3N` is GNU-only, not on macOS). Supported paths: `claude --plugin-dir "$(pwd)"` for testing local changes (no install), or `/plugin uninstall charter && /plugin install charter@fjoad-charter` to refresh from GitHub (push first). Documented in AGENTS.md § Iterating on Charter.
 
 ## Open Questions
 

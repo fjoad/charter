@@ -137,7 +137,30 @@ hooks/                  # SessionStart + UserPromptSubmit scripts
 agents/                 # Subagent prompt files
 template/               # Scaffolded into user projects
 docs/                   # Docs ABOUT Charter (dogfood)
-scripts/                # verify-plugin.sh — run before any release
+scripts/                # verify-plugin.sh (release gate) + replay-filter.py
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full layout with file-level detail.
+
+---
+
+## Iterating on Charter (local dev)
+
+Charter is a plugin, so "running" it means loading it into a Claude Code session. Two distinct workflows — don't confuse them:
+
+**Testing uncommitted local changes** (the inner loop):
+```bash
+claude --plugin-dir "$(pwd)"        # loads THIS repo's plugin for one session, no install
+```
+This is what `tests/e2e-install.sh` uses. It reflects your working tree immediately — no commit, no push, no install step. Use it to verify a command or hook change before committing.
+
+**Refreshing the installed copy** (so Charter is current across all your projects):
+```
+/plugin uninstall charter
+/plugin install charter@fjoad-charter
+```
+Run these as slash commands (you, not the AI — they're Claude Code's command layer, not shell). The reinstall pulls the latest from the GitHub marketplace, so push first. A new session is required for the reloaded plugin to take effect.
+
+**Never hand-edit `~/.claude/plugins/*.json` or the cache dir to force an update.** That internal state is owned by Claude Code's plugin subsystem; hand-patching it is fragile (it has bitten sessions before — e.g. a malformed `lastUpdated` timestamp from a non-portable `date` flag) and can break invariants the loader expects. The two workflows above are the supported paths.
+
+**Release flow** (what every vX.Y.Z this repo ships followed): feature branch → plan in `docs/plans/` → TDD (`tests/`) → `bash scripts/verify-plugin.sh` (runs structural + behavioral suite) → `bash tests/e2e-install.sh` before release → merge `--no-ff` → update STATUS on main → `git branch -d` the feature branch → tag `vX.Y.Z` → push tag. CI (`.github/workflows/test.yml`) re-runs the suite on every push.
