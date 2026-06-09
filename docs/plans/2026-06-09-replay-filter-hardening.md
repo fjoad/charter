@@ -1,6 +1,6 @@
 # v0.5.1 — /charter-replay filter hardening + turn counts
 
-**Status:** In progress (2026-06-09)
+**Status:** ✅ Complete (2026-06-09) — 70/70 tests pass, filter shipped as script, ready to merge.
 **Branch:** `feat/replay-filter-hardening`
 
 ## Why

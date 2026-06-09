@@ -73,7 +73,7 @@ Standard report format:
 
 **Working memory (v0.3.0+):** `docs/CONTEXT.md` is the AI's working memory across compactions. Maintained inline per `.claude/rules/context-discipline.md` whenever a non-obvious finding surfaces. Auto-loaded by `session-start.sh`. After `/compact`, run `/charter-recover` to restore orientation from CONTEXT.md + STATUS.md + active branch plan, *without* re-reading the transcript. Use `/charter-remember "..."` for explicit captures. See [docs/ARCHITECTURE.md § Working Memory](docs/ARCHITECTURE.md#working-memory-contextmd).
 
-**Tier-2 recovery (v0.4.0+):** If `/charter-recover` isn't enough (CONTEXT.md was sparse, the user emphasized something not captured, etc.), `/charter-replay` reads the session's JSONL filtered to user-text + assistant-text only — no tool I/O. Typically 5–10× smaller than the raw transcript. Never read the raw `.jsonl` directly; that's tier-3 and a documented anti-pattern.
+**Tier-2 recovery (v0.4.0+):** If `/charter-recover` isn't enough (CONTEXT.md was sparse, the user emphasized something not captured, etc.), `/charter-replay` runs `scripts/replay-filter.py` (v0.5.1+) over the session's JSONL — keeping genuine human prompts + assistant text, excluding tool I/O, thinking, sidechain, and harness injections (task notifications, slash-command echoes, interrupt markers, compaction summaries, image placeholders). Reports turn counts. Never read the raw `.jsonl` directly; that's tier-3 and a documented anti-pattern.
 
 **Preview / dry-run (v0.5.0+):** `/charter-preview attach` (or `init`, `adopt-branches`, `adopt-context`) lists what would be scaffolded — NEW vs EXISTS per file — without writing anything. Use when evaluating Charter on a new project.
 

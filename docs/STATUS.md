@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-04 (v0.5.0 shipped)  
+**Last updated:** 2026-06-09 (v0.5.1 in progress)  
 **Current branch:** `main`
 
 ---
@@ -29,6 +29,7 @@
 | Working memory (CONTEXT.md) | Done (v0.3.0) | `template/`, `hooks/`, `commands/`, `.claude/rules/` | AI-maintained working memory across compactions; auto-loaded by session-start; `/charter-remember` + `/charter-recover` + opt-in `/charter-adopt context`. Merged 2026-05-12. |
 | Tier-2 recovery (/charter-replay) | Done (v0.4.0) | `commands/`, `.claude/rules/` | Filtered-transcript recovery for when CONTEXT.md isn't enough. Three-tier model documented. |
 | Preview command + CONTEXT-per-branch articulation | Done (v0.5.0) | `commands/charter-preview.md`, `docs/ARCHITECTURE.md`, rules | Dry-run for init/attach/adopt-*. CONTEXT.md branch-scoped behavior made explicit. |
+| Replay filter hardening | Done (v0.5.1) | `scripts/replay-filter.py`, `commands/charter-replay.md`, `tests/` | Committed, unit-tested filter excludes harness injections + adds turn counts. Inventory from 11-project transcript sweep. |
 
 ---
 
@@ -44,7 +45,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-_None active._
+- `feat/replay-filter-hardening` → [docs/plans/2026-06-09-replay-filter-hardening.md](plans/2026-06-09-replay-filter-hardening.md) — v0.5.1 in progress
 
 ---
 
@@ -52,6 +53,7 @@ _None active._
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-06-09 | /charter-replay filter as committed script | Edge cases (interrupt `[` over-match, image strip-keep) too fiddly to re-derive in-prompt; now unit-tested (see decisions/2026-06-09-replay-filter-as-script.md) |
 | 2026-06-04 | /charter-preview + CONTEXT-per-branch articulation | Dry-run UX for evaluation; clarifies CONTEXT.md is allowed on feature branches unlike STATUS sections (see decisions/2026-06-04-preview-and-context-per-branch.md) |
 | 2026-05-12 | /charter-replay tier-2 recovery | Filtered-transcript fallback for when CONTEXT.md is sparse; bridges tier-1 (cheap) and full-transcript (anti-pattern) (see decisions/2026-05-12-replay-command.md) |
 | 2026-05-12 | Working memory doc (CONTEXT.md) | AI scratchpad across compactions, auto-loaded; same capability-detection backward-compat (see decisions/2026-05-12-context-doc.md) |
@@ -74,7 +76,9 @@ _None active._
 5. ~~Tier-2 recovery / /charter-replay (v0.4.0) — merged + pushed + tagged 2026-05-12~~ (done)
 6. ~~Branch-cleanup finish-ritual patch (v0.4.1) — merged + pushed + tagged 2026-06-04~~ (done)
 7. ~~Preview + CONTEXT-per-branch articulation (v0.5.0) — merged 2026-06-04~~ (done)
-8. **Think through monorepo support (v2+ scope) — design pass only, no build** **(current)**
-9. Await marketplace review acceptance
-10. Update install instructions once marketplace accepted
-11. Monitor for user feedback and bug reports
+8. ~~Replay filter hardening (v0.5.1)~~ (in progress — see plan)
+9. Consider `/charter-help` command (discoverability — 3 sibling sessions have rebuilt existing features)
+10. Think through monorepo support (v2+ scope) — design pass only, no build
+11. Await marketplace review acceptance
+12. Update install instructions once marketplace accepted
+13. Monitor for user feedback and bug reports
