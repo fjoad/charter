@@ -151,10 +151,22 @@ else
   assert_eq "present" "missing" "charter-help.md exists"
 fi
 
-if grep -q "replace every \`/\` with \`-\`" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
-  assert_eq "present" "present" "charter-replay.md explains session-dir encoding"
+# Encoding now lives in the (tested) encode_cwd() in the script; the command's
+# fallback documents it as "non-alphanumeric -> dash" (more accurate than the
+# old "/ -> -" prose). Assert the encoding is documented somewhere correct.
+if grep -qi "non-alphanumeric" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null \
+   && grep -q "non-alphanumeric\|\[\^A-Za-z0-9\]" "$REPO_DIR/scripts/replay-filter.py"; then
+  assert_eq "present" "present" "session-dir encoding documented (command fallback + script)"
 else
-  assert_eq "present" "missing" "charter-replay.md explains session-dir encoding"
+  assert_eq "present" "missing" "session-dir encoding documented (command fallback + script)"
+fi
+
+# Auto-find: the script and command reflect the one-shot (no-path) usage.
+if grep -q "find_current_transcript" "$REPO_DIR/scripts/replay-filter.py" \
+   && grep -q "auto-locate\|auto-find\|finds this session" "$REPO_DIR/commands/charter-replay.md"; then
+  assert_eq "present" "present" "replay-filter auto-finds the transcript (one-shot)"
+else
+  assert_eq "present" "missing" "replay-filter auto-finds the transcript (one-shot)"
 fi
 
 if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
