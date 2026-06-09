@@ -110,6 +110,24 @@ else
   assert_eq "present" "missing" "charter-replay.md has the filter pipeline"
 fi
 
+if [[ -f "$REPO_DIR/scripts/replay-filter.py" ]]; then
+  assert_eq "present" "present" "scripts/replay-filter.py exists"
+else
+  assert_eq "present" "missing" "scripts/replay-filter.py exists"
+fi
+
+if grep -q "replay-filter.py" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-replay.md invokes the committed filter script"
+else
+  assert_eq "present" "missing" "charter-replay.md invokes the committed filter script"
+fi
+
+if grep -q "Request interrupted" "$REPO_DIR/scripts/replay-filter.py" && grep -q "isCompactSummary" "$REPO_DIR/scripts/replay-filter.py"; then
+  assert_eq "present" "present" "replay-filter.py handles interrupt + compaction injections"
+else
+  assert_eq "present" "missing" "replay-filter.py handles interrupt + compaction injections"
+fi
+
 if grep -q "replace every \`/\` with \`-\`" "$REPO_DIR/commands/charter-replay.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-replay.md explains session-dir encoding"
 else

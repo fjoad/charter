@@ -1,0 +1,14 @@
+{"type":"user","message":{"content":"hello, this is the first genuine prompt"}}
+{"type":"assistant","message":{"content":[{"type":"text","text":"Hi — here is my reply."}]}}
+{"type":"assistant","message":{"content":[{"type":"tool_use","name":"Bash","input":{"command":"ls"}}]}}
+{"type":"user","message":{"content":[{"type":"tool_result","content":"file1\nfile2"}]}}
+{"type":"user","message":{"content":"<task-notification>\n<task-id>abc123</task-id>\n<status>completed</status>\n</task-notification>"}}
+{"type":"user","message":{"content":"<command-name>/model</command-name>\n<command-message>model</command-message>\n<command-args>opus</command-args>"}}
+{"type":"user","message":{"content":"[Request interrupted by user]"}}
+{"type":"user","message":{"content":"[11:27:15.240] Log Level: 2 — paste of a real log the human typed"}}
+{"type":"user","isCompactSummary":true,"message":{"content":"This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion."}}
+{"type":"user","message":{"content":"[Image: source: /Users/x/.claude/image-cache/uuid/3.png]"}}
+{"type":"user","message":{"content":"[Image #3] what is shown in this screenshot?"}}
+{"type":"assistant","message":{"content":[{"type":"thinking","thinking":"internal reasoning that should never be counted"}]}}
+{"type":"assistant","isSidechain":true,"message":{"content":[{"type":"text","text":"subagent internal text — should be excluded"}]}}
+{"type":"user","message":{"content":"and this is the final genuine prompt"}}

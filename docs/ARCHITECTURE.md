@@ -97,7 +97,7 @@ When the user runs `/compact`, the AI picks the cheapest viable recovery tier:
 
 Tier 1 assumes the context-discipline rule was followed during the session. Tier 2 is the safety net when CONTEXT.md is sparse, stale, or missing nuance. Tier 3 is what burned hundreds of thousands of tokens in real cases; documented as something to avoid, not a Charter command.
 
-`/charter-replay` finds the session JSONL via the convention `~/.claude/projects/<encoded-cwd>/*.jsonl` (cwd `/` → `-`), pipes through a Python filter that keeps `type=user` / `type=assistant` entries with only `{type:"text"}` content blocks, writes to `/tmp/session-dialog.txt`, reads that.
+`/charter-replay` finds the session JSONL via the convention `~/.claude/projects/<encoded-cwd>/*.jsonl` (cwd `/` → `-`), then runs the committed filter `scripts/replay-filter.py` (v0.5.1+), which keeps genuine human prompts + assistant text and excludes tool I/O, thinking, sidechain records, and harness-injected user-role records (task notifications, slash-command echoes, `[Request interrupted]` markers, compaction summaries, standalone image placeholders). It writes dialogue to `/tmp/session-dialog.txt` and a turn-count summary to stderr. The filter is unit-tested (`tests/replay-filter.test.sh` against `tests/fixtures/replay-sample.jsonl`). Its injection inventory was empirically derived from a parallel sweep of ~7,800 transcripts across 11 projects — see `docs/decisions/2026-06-09-replay-filter-as-script.md` for why it's a committed script rather than an in-prompt pipeline.
 
 ### Alive, not a log
 
