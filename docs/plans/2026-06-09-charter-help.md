@@ -1,6 +1,6 @@
 # v0.6.0 — /charter-help + AI-facing discoverability
 
-**Status:** In progress (2026-06-09)
+**Status:** ✅ Complete (2026-06-09) — 76/76 tests pass, ready to merge.
 **Branch:** `feat/charter-help`
 
 ## Why

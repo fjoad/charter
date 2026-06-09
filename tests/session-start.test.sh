@@ -67,6 +67,7 @@ out=$(run_hook_in_temp setup_main_with_status)
 assert_contains "$out" "Test Project Status" "STATUS.md content appears in output"
 assert_contains "$out" "Charter: Project Orientation" "orient block header appears"
 assert_not_contains "$out" "Active Plan:" "no plan section when no plans exist"
+assert_contains "$out" "/charter-help" "orient block points the AI at /charter-help (discoverability)"
 
 echo "  scenario: scaffold on main, with plan"
 out=$(run_hook_in_temp setup_main_with_status_and_plan)

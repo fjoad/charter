@@ -75,6 +75,8 @@ Standard report format:
 
 **Tier-2 recovery (v0.4.0+):** If `/charter-recover` isn't enough (CONTEXT.md was sparse, the user emphasized something not captured, etc.), `/charter-replay` runs `scripts/replay-filter.py` (v0.5.1+) over the session's JSONL — keeping genuine human prompts + assistant text, excluding tool I/O, thinking, sidechain, and harness injections (task notifications, slash-command echoes, interrupt markers, compaction summaries, image placeholders). Reports turn counts. Never read the raw `.jsonl` directly; that's tier-3 and a documented anti-pattern.
 
+**Discoverability (v0.6.0+):** `/charter-help` lists every command, opt-in convention, and recovery tier. The session-start orient block now tells the AI to check `/charter-help` before building recovery / transcript / branch / working-memory / scaffolding tooling — Charter likely already ships it. Reuse or improve the existing command rather than reinventing it.
+
 **Preview / dry-run (v0.5.0+):** `/charter-preview attach` (or `init`, `adopt-branches`, `adopt-context`) lists what would be scaffolded — NEW vs EXISTS per file — without writing anything. Use when evaluating Charter on a new project.
 
 **CONTEXT.md is branch-scoped (v0.3.0, articulated v0.5.0):** unlike STATUS.md component sections (which only update on main), CONTEXT.md edits ARE allowed on feature branches. Each branch has its own working memory. On merge, prune branch-specific entries that don't generalize.
