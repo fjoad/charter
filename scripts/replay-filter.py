@@ -29,8 +29,10 @@ marker must match the full '[Request interrupted' prefix (genuine prompts
 legitimately start with '[': '[Image #3]...', '[11:27:15] log...', etc.).
 """
 import sys
-import json
+import os
 import re
+import glob
+import json
 
 # Matches harness image placeholders anywhere in the text, e.g.
 #   [Image #3]
@@ -132,14 +134,73 @@ def filter_transcript(path):
     return out, gen_user, asst
 
 
+def encode_cwd(path):
+    """Encode a working directory to its Claude Code session-dir name.
+
+    Convention: every non-alphanumeric character becomes '-'.
+    e.g. /Users/me/proj -> -Users-me-proj
+         /a/Personal Information (1)/x -> -a-Personal-Information--1--x
+    """
+    return re.sub(r"[^A-Za-z0-9]", "-", path)
+
+
+def find_current_transcript(projects_root=None):
+    """Locate the current session's transcript: newest *.jsonl in the
+    encoded-cwd session dir under projects_root.
+
+    Returns the path, or None if no transcript is found.
+    """
+    if projects_root is None:
+        projects_root = os.environ.get("CHARTER_PROJECTS_ROOT") or os.path.expanduser(
+            "~/.claude/projects"
+        )
+    session_dir = os.path.join(projects_root, encode_cwd(os.getcwd()))
+    if not os.path.isdir(session_dir):
+        return None
+    candidates = glob.glob(os.path.join(session_dir, "*.jsonl"))
+    if not candidates:
+        return None
+    return max(candidates, key=os.path.getmtime)
+
+
 def main():
     argv = sys.argv[1:]
     counts_only = "--counts-only" in argv
-    positional = [a for a in argv if not a.startswith("--")]
-    if not positional:
-        sys.stderr.write("usage: replay-filter.py <transcript.jsonl> [--counts-only]\n")
-        sys.exit(2)
-    out, gen_user, asst = filter_transcript(positional[0])
+
+    # --projects-root <dir> override (consumes the following token)
+    projects_root = None
+    cleaned = []
+    i = 0
+    while i < len(argv):
+        a = argv[i]
+        if a == "--projects-root":
+            if i + 1 < len(argv):
+                projects_root = argv[i + 1]
+                i += 2
+                continue
+            sys.stderr.write("error: --projects-root requires a directory argument\n")
+            sys.exit(2)
+        cleaned.append(a)
+        i += 1
+
+    positional = [a for a in cleaned if not a.startswith("--")]
+
+    if positional:
+        path = positional[0]
+    else:
+        # No path given: find this session's transcript automatically.
+        path = find_current_transcript(projects_root)
+        if path is None:
+            root = projects_root or os.environ.get("CHARTER_PROJECTS_ROOT") or "~/.claude/projects"
+            sys.stderr.write(
+                "error: no session transcript found for cwd "
+                f"({os.getcwd()}) under {root}. "
+                "Pass an explicit <transcript.jsonl> path, or run from the project directory.\n"
+            )
+            sys.exit(2)
+        sys.stderr.write(f"[transcript] {path}\n")
+
+    out, gen_user, asst = filter_transcript(path)
     if not counts_only:
         for label, body in out:
             print("### " + label)

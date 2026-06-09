@@ -12,31 +12,31 @@ Recover the context of THIS conversation by reading only genuine human prompts a
 
 ## Steps
 
-1. **Find this session's transcript file.**
-   - Encode the current working directory as a session-dir name: replace every `/` with `-`. (Example: `/Users/me/project` → `-Users-me-project`)
-   - Sessions live at `~/.claude/projects/<encoded-cwd>/`
-   - The most-recently-modified `.jsonl` in that directory is the current session's transcript.
-   - If there's exactly one, use it. If there are multiple, pick the one with the latest mtime.
-
-2. **Run the filter script.** Charter ships a tested filter that handles the edge cases (harness injections, image placeholders, interrupt markers vs genuine `[`-prefixed prompts):
+1. **Run the filter script — that's it.** It finds this session's transcript itself (no path needed) and prints the filtered dialogue:
 
    ```bash
-   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py" <PATH-TO-TRANSCRIPT.jsonl> > /tmp/session-dialog.txt
+   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py"
    ```
 
-   It writes the filtered dialogue (`### USER` / `### ASSISTANT` blocks) to `/tmp/session-dialog.txt` and a one-line count summary to stderr, e.g. `[counts] genuine user prompts: 28 | assistant text replies: 95`.
+   The dialogue (`### USER` / `### ASSISTANT` blocks) goes to **stdout** — so its output lands directly in your context. To stderr it writes which transcript it used and a count summary, e.g. `[counts] genuine user prompts: 28 | assistant text replies: 95`.
 
-   The script excludes: tool calls and tool results, assistant thinking, subagent/sidechain records, and harness-injected user-role records (task notifications, slash-command echoes, `[Request interrupted]` markers, compaction summaries, standalone image placeholders). It keeps genuine human text — including prompts that legitimately start with `[` (logs, `[Image #N]` with real text after).
+   The script auto-locates the transcript by encoding the current working directory and finding the newest `*.jsonl` under `~/.claude/projects/<encoded-cwd>/`. It excludes tool calls/results, assistant thinking, subagent/sidechain records, and harness-injected user-role records (task notifications, slash-command echoes, `[Request interrupted]` markers, compaction summaries, standalone image placeholders) — keeping genuine human text, including prompts that legitimately start with `[`.
 
-3. **Report the counts** to the user first (e.g. "28 genuine prompts, 95 replies"), then **read `/tmp/session-dialog.txt`** to rebuild context.
+   **For a very long session**, redirect to a file and read it in chunks instead of dumping it all at once:
+   ```bash
+   python3 "${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py" > /tmp/session-dialog.txt
+   ```
+   (You can also pass an explicit `<transcript.jsonl>` path as an argument if auto-find picks the wrong file.)
 
-4. **Also load** `docs/CONTEXT.md` (if it exists), `docs/STATUS.md`, and the active branch plan, the same way `/charter-recover` would. The replay gives nuance; the docs give state.
+2. **Report the counts** to the user (e.g. "28 genuine prompts, 95 replies"), then use the dialogue to rebuild context.
 
-5. **Summarize briefly:** what was being worked on, where we left off, anything the user explicitly emphasized, and any open questions.
+3. **Also load** `docs/CONTEXT.md` (if it exists), `docs/STATUS.md`, and the active branch plan, the same way `/charter-recover` would. The replay gives nuance; the docs give state.
+
+4. **Summarize briefly:** what was being worked on, where we left off, anything the user explicitly emphasized, and any open questions.
 
 ## Fallback (if the script is unavailable)
 
-If `${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py` can't be found, you can run an inline equivalent — but mind the edge cases the script handles: match the FULL `[Request interrupted` prefix (never a bare `[`, since genuine prompts start with `[`), strip `[Image ...]` placeholders but keep any human text after them, and drop records with `isCompactSummary: true` or tool_result blocks.
+If `${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py` can't be found, find the newest `*.jsonl` under `~/.claude/projects/<cwd-with-every-non-alphanumeric-char-as-dash>/` and filter it yourself — but mind the edge cases the script handles: match the FULL `[Request interrupted` prefix (never a bare `[`, since genuine prompts start with `[`), strip `[Image ...]` placeholders but keep any human text after them, and drop records with `isCompactSummary: true` or tool_result blocks.
 
 ## Do NOT
 

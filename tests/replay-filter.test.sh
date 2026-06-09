@@ -45,3 +45,33 @@ assert_not_contains "$OUT" "subagent internal text" "sidechain record excluded"
 # --counts-only suppresses dialogue but still reports counts.
 CO_OUT=$(python3 "$FILTER" "$FIXTURE" --counts-only 2>/dev/null)
 assert_eq "" "$CO_OUT" "--counts-only writes no dialogue to stdout"
+
+# --- Auto-find mode (no path arg): script locates the transcript itself ---
+
+# Build a fake projects-root whose encoded-cwd dir matches THIS shell's cwd,
+# so the script's getcwd-encoding lands on it. Drop the fixture as the newest.
+AF_ROOT=$(mktemp -d)
+ENC=$(python3 -c "import re,os;print(re.sub(r'[^A-Za-z0-9]','-',os.getcwd()))")
+mkdir -p "$AF_ROOT/$ENC"
+cp "$FIXTURE" "$AF_ROOT/$ENC/older.jsonl"
+sleep 1
+cp "$FIXTURE" "$AF_ROOT/$ENC/newest.jsonl"   # newest by mtime — should be chosen
+
+echo "  scenario: auto-find via --projects-root picks newest transcript"
+AF_COUNTS=$(python3 "$FILTER" --projects-root "$AF_ROOT" --counts-only 2>&1)
+assert_contains "$AF_COUNTS" "genuine user prompts: 4" "auto-find produces the right genuine count"
+assert_contains "$AF_COUNTS" "newest.jsonl" "auto-find reports it used the newest transcript"
+
+echo "  scenario: auto-find via CHARTER_PROJECTS_ROOT env var"
+ENV_COUNTS=$(CHARTER_PROJECTS_ROOT="$AF_ROOT" python3 "$FILTER" --counts-only 2>&1)
+assert_contains "$ENV_COUNTS" "genuine user prompts: 4" "env-var projects-root override works"
+
+echo "  scenario: auto-find with no transcript present errors cleanly"
+EMPTY_ROOT=$(mktemp -d)
+python3 "$FILTER" --projects-root "$EMPTY_ROOT" >/dev/null 2>/tmp/af-err.txt
+AF_RC=$?
+AF_ERR=$(cat /tmp/af-err.txt)
+assert_eq "2" "$AF_RC" "no-transcript-found exits non-zero (2)"
+assert_contains "$AF_ERR" "no session transcript" "error explains no transcript was found"
+
+rm -rf "$AF_ROOT" "$EMPTY_ROOT"

@@ -1,6 +1,6 @@
 # v0.7.0 — self-contained replay-filter (one-shot "run this")
 
-**Status:** In progress (2026-06-09)
+**Status:** ✅ Complete (2026-06-09) — 81/81 tests pass, one-shot auto-find verified live, ready to merge.
 **Branch:** `feat/replay-self-contained`
 
 ## Why
