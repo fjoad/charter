@@ -1,6 +1,6 @@
 # v0.8.0 — Token budget: enforced, not aspirational
 
-**Status:** In progress (2026-06-11)
+**Status:** ✅ Complete (2026-06-11) — 96/96 tests pass, real overhead measured (~4.6k tokens on Charter's own repo), ready to merge.
 **Branch:** `feat/token-budget`
 
 ## Why

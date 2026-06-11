@@ -1,18 +1,24 @@
 ---
-description: "Report the token overhead Charter adds to this session: session-start orient block, per-turn nudges, and ritual overhead from rule files."
+description: "Report the token overhead Charter adds to this session: measured session-start orient block, per-turn nudges, and rule-file overhead."
 ---
 
 The user wants to understand Charter's token overhead for this session.
 
-Estimate and report the token cost Charter has added to this session:
+Report the token cost Charter has added — **measured, not estimated, where possible**:
 
-1. **Session-start orient block**: The SessionStart hook injects current STATUS.md + active plan into context once per session. Estimate tokens: length of STATUS.md + length of active plan + ~50 tokens of framing. If no STATUS.md exists, this was 0.
+1. **Session-start orient block (measure it):** run
 
-2. **Per-turn nudge**: The UserPromptSubmit hook injects ~20 tokens per turn. Multiply by approximate number of turns this session.
+   ```bash
+   bash "${CLAUDE_PLUGIN_ROOT}/scripts/measure-overhead.sh" .
+   ```
 
-3. **Rule files loaded**: .claude/rules/ files are loaded into context each session. Estimate tokens for: project-flow.md (~400 tokens), workflow.md (~350 tokens), turn-ritual.md (~350 tokens), testing.md (~250 tokens). Total: ~1,350 tokens per session.
+   This re-runs the SessionStart hook for this project and reports the actual chars / ~tokens injected, plus whether any truncation caps are active. (If the script is unavailable, estimate: STATUS.md length + injected CONTEXT.md (≤200 lines) + injected plan (≤40 lines) + ~120 tokens of framing.)
 
-4. **Ritual overhead**: Any writing-plans or verification outputs created this session (these are part of productive work, not pure overhead, but include them for transparency).
+2. **Per-turn nudge:** the UserPromptSubmit hook injects ~25 tokens per turn. Multiply by the approximate number of turns this session.
+
+3. **Rule files loaded:** `.claude/rules/` files load into context each session. Count the actual files present in this project's `.claude/rules/` and estimate ~4 tokens per line (`wc -l .claude/rules/*.md`).
+
+4. **Ritual overhead:** any plans or verification output created this session (part of productive work, not pure overhead — include for transparency).
 
 Format:
 
@@ -20,11 +26,10 @@ Format:
 
 | Source | Tokens | Notes |
 |--------|--------|-------|
-| Session-start orient | ~[N] | STATUS.md + active plan, once |
-| Per-turn nudge | ~[N] | ~20 tokens × [N] turns |
-| Rule files | ~1,350 | Loaded once per session |
+| Session-start orient | ~[measured N] | measured via measure-overhead.sh |
+| Per-turn nudge | ~[N] | ~25 tokens × [N] turns |
+| Rule files | ~[N] | [list files counted] |
 | **Total overhead** | **~[N]** | |
-| Context window | ~200,000 | Claude's context size |
-| **Overhead %** | **~[N]%** | Overhead / context window |
+| **Overhead % of 200k context** | **~[N]%** | |
 
-Note: Rule files and the orient block are what make Charter useful — without them, Claude starts each session cold. The cost is the price of continuity.
+If a truncation marker was reported, note which file is over its cap and suggest pruning (CONTEXT.md over 200 lines should be pruned per context-discipline).
