@@ -25,7 +25,9 @@ run_hook_in_temp() {
   git branch -m main 2>/dev/null || true
   "$setup_fn"
   local output
-  output=$(bash "$HOOK" 2>&1 || true)
+  # CHARTER_DEV_SOURCE pinned to a nonexistent path by default so tests stay
+  # hermetic even if the developer has ~/.config/charter/dev-source set.
+  output=$(CHARTER_DEV_SOURCE="${CHARTER_DEV_SOURCE_OVERRIDE:-/nonexistent-charter-dev-source}" bash "$HOOK" 2>&1 || true)
   popd >/dev/null
   rm -rf "$tmpdir"
   printf '%s' "$output"
@@ -324,3 +326,35 @@ if [[ "$out_len" -lt 24000 ]]; then
 else
   assert_eq "under" "OVER:$out_len" "orient block under 24,000 chars"
 fi
+
+# --- Dev-mode staleness nudge (v0.8.1) ---
+
+REPO_VERSION=$(grep '"version"' "$(dirname "${BASH_SOURCE[0]}")/../.claude-plugin/plugin.json" | head -1 | sed 's/.*"version": *"\([^"]*\)".*/\1/')
+
+make_fake_source() {
+  # $1 = version to fake
+  local d
+  d=$(mktemp -d)
+  mkdir -p "$d/.claude-plugin" "$d/scripts"
+  printf '{\n  "name": "charter",\n  "version": "%s"\n}\n' "$1" > "$d/.claude-plugin/plugin.json"
+  printf '%s' "$d"
+}
+
+echo "  scenario: dev nudge fires when source version differs"
+FAKE_NEWER=$(make_fake_source "99.0.0")
+out=$(CHARTER_DEV_SOURCE_OVERRIDE="$FAKE_NEWER" run_hook_in_temp setup_main_with_status)
+assert_contains "$out" "v${REPO_VERSION}" "nudge names the installed version"
+assert_contains "$out" "99.0.0" "nudge names the source version"
+assert_contains "$out" "dev-sync" "nudge points at dev-sync"
+rm -rf "$FAKE_NEWER"
+
+echo "  scenario: dev nudge silent when versions match"
+FAKE_SAME=$(make_fake_source "$REPO_VERSION")
+out=$(CHARTER_DEV_SOURCE_OVERRIDE="$FAKE_SAME" run_hook_in_temp setup_main_with_status)
+assert_not_contains "$out" "dev-sync" "no nudge when in sync"
+rm -rf "$FAKE_SAME"
+
+echo "  scenario: dev nudge silent when source path is bogus"
+out=$(CHARTER_DEV_SOURCE_OVERRIDE="/no/such/dir" run_hook_in_temp setup_main_with_status)
+assert_not_contains "$out" "dev-sync" "no nudge (and no error) for invalid source path"
+assert_contains "$out" "Charter: Project Orientation" "hook still works with invalid source path"

@@ -106,6 +106,33 @@ plan_is_complete() {
 CONTEXT_MAX=200
 PLAN_MAX=40
 
+# Read the version out of a repo's .claude-plugin/plugin.json (empty if absent).
+plugin_version() {
+  local f="$1/.claude-plugin/plugin.json"
+  [[ -f "$f" ]] || return 0
+  { grep '"version"' "$f" || true; } | head -1 | sed 's/.*"version": *"\([^"]*\)".*/\1/'
+}
+
+# Dev-mode staleness nudge (opt-in, fail-silent). If CHARTER_DEV_SOURCE (env)
+# or ~/.config/charter/dev-source (file containing a path) points at a Charter
+# source repo, compare this installed plugin's version against the source's.
+# One orient line when they differ; nothing when in sync or unconfigured.
+DEV_NUDGE=""
+DEV_SOURCE="${CHARTER_DEV_SOURCE:-}"
+if [[ -z "$DEV_SOURCE" && -f "$HOME/.config/charter/dev-source" ]]; then
+  DEV_SOURCE=$(head -1 "$HOME/.config/charter/dev-source" 2>/dev/null || true)
+fi
+if [[ -n "$DEV_SOURCE" && -d "$DEV_SOURCE" ]]; then
+  PLUGIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+  MY_VER=$(plugin_version "$PLUGIN_ROOT")
+  SRC_VER=$(plugin_version "$DEV_SOURCE")
+  if [[ -n "$MY_VER" && -n "$SRC_VER" && "$MY_VER" != "$SRC_VER" ]]; then
+    DEV_NUDGE="
+NOTE (Charter dev mode): this installed plugin is v${MY_VER} but the source repo (${DEV_SOURCE}) is v${SRC_VER}. Run \`bash ${DEV_SOURCE}/scripts/dev-sync.sh\` and restart Claude Code to refresh.
+"
+  fi
+fi
+
 STATUS_CONTENT=$(cat "$STATUS_FILE")
 
 # Working memory block (empty unless docs/CONTEXT.md exists)
@@ -178,7 +205,7 @@ ${PLAN_CONTENT}
 Session start ritual: read STATUS.md ✓ — you know where this project stands. Check docs/ARCHITECTURE.md if you need structural context. Check docs/VISION.md if you need to understand the thesis. Find the current step in "What to Work On Next" above and proceed.
 
 Before building any session-recovery, transcript, branch-management, working-memory, or scaffolding tooling: check what Charter already provides (run or read /charter-help). Charter likely already ships it — reuse or improve the existing command rather than reinventing it.
-
+${DEV_NUDGE}
 When you respond, briefly tell the user: where the project stands (current step), and what Charter is doing this session (orienting from STATUS.md, classifying requests by tier, enforcing finish ritual). Keep it to 2-3 sentences — they shouldn't need to read docs to understand what's happening.
 ORIENT
 )
