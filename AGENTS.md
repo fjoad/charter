@@ -155,11 +155,12 @@ claude --plugin-dir "$(pwd)"        # loads THIS repo's plugin for one session, 
 This is what `tests/e2e-install.sh` uses. It reflects your working tree immediately — no commit, no push, no install step. Use it to verify a command or hook change before committing.
 
 **Refreshing the installed copy** (so Charter is current across all your projects):
+```bash
+bash scripts/dev-sync.sh
 ```
-/plugin uninstall charter
-/plugin install charter@fjoad-charter
-```
-Run these as slash commands (you, not the AI — they're Claude Code's command layer, not shell). The reinstall pulls the latest from the GitHub marketplace, so push first. A new session is required for the reloaded plugin to take effect.
+This wraps the two supported CLI calls (`claude plugin marketplace update fjoad-charter` + `claude plugin update charter@fjoad-charter`) with a pushed-state check first. It's a mandatory finish-ritual step after pushing a release tag. A new session is required for the reloaded plugin to take effect.
+
+**Staleness nudge (opt-in):** put the source repo path in `~/.config/charter/dev-source` (or export `CHARTER_DEV_SOURCE`). The session-start hook then compares the installed plugin's version against the source on every session and injects a one-line nudge when they differ. Zero cost when in sync.
 
 **Never hand-edit `~/.claude/plugins/*.json` or the cache dir to force an update.** That internal state is owned by Claude Code's plugin subsystem; hand-patching it is fragile (it has bitten sessions before — e.g. a malformed `lastUpdated` timestamp from a non-portable `date` flag) and can break invariants the loader expects. The two workflows above are the supported paths.
 

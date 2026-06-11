@@ -35,6 +35,7 @@
 - [ ] Commit all doc updates
 - [ ] **If work was done on a feature branch that's now merged to main, delete the local branch** (`git branch -d <name>` — refuses if anything isn't merged, so it's safe). The merge commit preserves the branch's work in history. Skipping this leaves stale labels that confuse future sessions and `git branch` output.
 - [ ] **If you added a new command (`commands/*.md`), add it to `/charter-help`'s catalog and the README command table.** A plugin-structure test enforces the help sync; don't let it be the thing that catches you.
+- [ ] **After pushing a release tag, run `bash scripts/dev-sync.sh`.** Your own install should never be behind your own release — staleness here is what caused sibling sessions to rebuild shipped features. (For a multi-release arc, running it once after the final tag is fine.)
 - [ ] Report to user in this format:
 
 ```

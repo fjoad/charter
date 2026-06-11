@@ -188,6 +188,22 @@ else
   assert_eq "present" "missing" "session-start.sh has truncation + completed-plan skip"
 fi
 
+# Dev-sync (v0.8.1): script exists, uses only supported CLI, ritual references it.
+if [[ -f "$REPO_DIR/scripts/dev-sync.sh" ]] \
+   && grep -q "plugin marketplace update" "$REPO_DIR/scripts/dev-sync.sh" \
+   && grep -q "plugin update" "$REPO_DIR/scripts/dev-sync.sh" \
+   && grep -q "origin/main..main" "$REPO_DIR/scripts/dev-sync.sh"; then
+  assert_eq "present" "present" "dev-sync.sh exists with supported CLI calls + push check"
+else
+  assert_eq "present" "missing" "dev-sync.sh exists with supported CLI calls + push check"
+fi
+
+if grep -q "dev-sync" "$REPO_DIR/.claude/rules/workflow.md"; then
+  assert_eq "present" "present" "finish ritual includes dev-sync step"
+else
+  assert_eq "present" "missing" "finish ritual includes dev-sync step"
+fi
+
 if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-recover.md mentions charter-replay as tier-2 fallback"
 else
