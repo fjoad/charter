@@ -241,3 +241,86 @@ out=$(run_hook_in_temp setup_feature_branch_with_context)
 assert_contains "$out" "Working Memory" "CONTEXT.md surfaces on feature branch too"
 assert_contains "$out" "On branch: feat/has-context" "branch context still works"
 assert_contains "$out" "Branch Plan: 2026-05-12-has-context.md" "branch plan still surfaces"
+
+# --- Token budget: skip completed plans, truncate long files (v0.8.0) ---
+
+setup_main_with_completed_plan() {
+  setup_main_with_status
+  mkdir -p docs/plans
+  cat > docs/plans/2026-06-01-shipped-thing.md <<EOF
+# Shipped Thing Plan
+
+**Status:** ✅ Complete (2026-06-01) — all done, merged.
+
+## Goal
+
+COMPLETED_PLAN_BODY_MARKER this plan is history.
+EOF
+}
+
+setup_main_with_long_inprogress_plan() {
+  setup_main_with_status
+  mkdir -p docs/plans
+  {
+    echo "# Big Active Plan"
+    echo ""
+    echo "**Status:** In progress"
+    echo ""
+    for i in $(seq 1 100); do echo "- step $i of the big plan"; done
+    echo "LATE_PLAN_CONTENT_MARKER should not be injected"
+  } > docs/plans/2026-06-01-big-active.md
+}
+
+setup_main_with_long_context() {
+  setup_main_with_status
+  {
+    echo "# Test — Working Memory"
+    for i in $(seq 1 250); do echo "- context entry number $i with some words in it"; done
+    echo "LATE_CONTEXT_MARKER should not be injected"
+  } > docs/CONTEXT.md
+}
+
+setup_budget_adversarial() {
+  setup_main_with_status
+  {
+    echo "# Test — Working Memory"
+    for i in $(seq 1 600); do echo "- context entry $i: a realistic-length working memory line with details in it"; done
+  } > docs/CONTEXT.md
+  mkdir -p docs/plans
+  {
+    echo "# Gigantic Plan"
+    echo "**Status:** In progress"
+    for i in $(seq 1 1200); do echo "- task $i: implement the thing and verify the other thing"; done
+  } > docs/plans/2026-06-01-gigantic.md
+}
+
+echo "  scenario: completed plan on main is NOT injected"
+out=$(run_hook_in_temp setup_main_with_completed_plan)
+assert_not_contains "$out" "COMPLETED_PLAN_BODY_MARKER" "completed plan body absent"
+assert_not_contains "$out" "Active Plan:" "no Active Plan section for a completed plan"
+
+echo "  scenario: long in-progress plan on main is truncated"
+out=$(run_hook_in_temp setup_main_with_long_inprogress_plan)
+assert_contains "$out" "Active Plan: 2026-06-01-big-active.md" "in-progress plan still surfaces"
+assert_contains "$out" "step 5 of the big plan" "early plan content present"
+assert_not_contains "$out" "LATE_PLAN_CONTENT_MARKER" "late plan content truncated away"
+assert_contains "$out" "truncated at 40" "plan truncation marker present"
+
+echo "  scenario: long CONTEXT.md is truncated with pruning nudge"
+out=$(run_hook_in_temp setup_main_with_long_context)
+assert_contains "$out" "context entry number 5" "early CONTEXT content present"
+assert_not_contains "$out" "LATE_CONTEXT_MARKER" "late CONTEXT content truncated away"
+assert_contains "$out" "prune" "truncation marker nudges pruning per context-discipline"
+
+echo "  scenario: short files get no truncation markers (backward compat)"
+out=$(run_hook_in_temp setup_main_with_status_and_context)
+assert_not_contains "$out" "truncated at" "no truncation marker for short files"
+
+echo "  scenario: adversarial fixture stays under the orient budget"
+out=$(run_hook_in_temp setup_budget_adversarial)
+out_len=${#out}
+if [[ "$out_len" -lt 24000 ]]; then
+  assert_eq "under" "under" "orient block under 24,000 chars (actual: $out_len)"
+else
+  assert_eq "under" "OVER:$out_len" "orient block under 24,000 chars"
+fi
