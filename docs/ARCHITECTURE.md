@@ -51,12 +51,14 @@ agents/
 
 Fires once per session. Detects whether the current project has Charter scaffold (checks for `docs/STATUS.md`). If yes:
 
-1. Reads `docs/STATUS.md` — extracts current step + what's next
-2. Reads active plan from `docs/plans/` (most recently modified)
-3. Outputs JSON `{ "additionalContext": "..." }` with ~200-token orient block
-4. Claude receives this before the user's first message
+1. Reads `docs/STATUS.md` — injected in full (deliberately uncapped: "What to Work On Next" lives at the bottom; head-truncation would cut it)
+2. Reads `docs/CONTEXT.md` if present — capped at 200 lines (the context-discipline pruning threshold; the truncation marker nudges pruning)
+3. Reads the relevant plan from `docs/plans/` — branch-matched on feature branches, most-recent on main. Capped at 40 lines with a read-the-file marker. **Plans whose header says `Status: … Complete` are skipped entirely on main** — history is not orientation.
+4. Outputs JSON `{ "additionalContext": "..." }`; Claude receives it before the user's first message
 
-If no `docs/STATUS.md` found, outputs nothing (plugin is installed but project not scaffolded yet).
+The orient block is budget-gated: a CI test feeds an adversarial fixture (600-line CONTEXT + 1,200-line plan) and fails if output exceeds 24,000 chars (~6k tokens). Measure any project's real number with `scripts/measure-overhead.sh` (which `/charter-cost` uses). See `docs/TOKEN-BUDGET.md` and `docs/decisions/2026-06-11-token-budget.md`.
+
+If no `docs/STATUS.md` found, outputs a one-line hint to run /charter-init or /charter-attach.
 
 ### UserPromptSubmit
 

@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-09 (v0.7.0 shipped)  
+**Last updated:** 2026-06-11 (v0.8.0 in progress)  
 **Current branch:** `main`
 
 ---
@@ -32,6 +32,7 @@
 | Replay filter hardening | Done (v0.5.1) | `scripts/replay-filter.py`, `commands/charter-replay.md`, `tests/` | Committed, unit-tested filter excludes harness injections + adds turn counts. Inventory from 11-project transcript sweep. |
 | Discoverability (/charter-help) | Done (v0.6.0) | `commands/charter-help.md`, `hooks/session-start.sh` | Command catalog + AI-facing orient-block pointer. Test-enforced sync. Addresses 3 sibling-session reinventions. |
 | Self-contained replay-filter | Done (v0.7.0) | `scripts/replay-filter.py`, `commands/charter-replay.md` | One-shot: auto-finds the session transcript (no path arg), prints dialogue to stdout. |
+| Token budget (enforced) | Done (v0.8.0) | `hooks/session-start.sh`, `scripts/measure-overhead.sh` | Completed plans skipped; plans cap 40 lines, CONTEXT 200; CI budget gate at 24k chars; /charter-cost measures for real. |
 
 ---
 
@@ -47,7 +48,7 @@
 
 <!-- One line per active feature branch. Format: `- \`branch-name\` → docs/plans/<plan-file>.md — short status`. The session-start hook reads this section. -->
 
-_None active._
+- `feat/token-budget` → [docs/plans/2026-06-11-token-budget.md](plans/2026-06-11-token-budget.md) — v0.8.0 in progress
 
 ---
 
@@ -55,6 +56,7 @@ _None active._
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-06-11 | Orient-block token budget enforced | Completed plans skipped, caps + CI gate; "measure, prune" applied to Charter itself (see decisions/2026-06-11-token-budget.md) |
 | 2026-06-09 | replay-filter.py self-contained (auto-find transcript) | Collapse /charter-replay to a one-shot "run this"; script finds its own session JSONL (see decisions/2026-06-09-replay-self-contained.md) |
 | 2026-06-09 | /charter-help + AI-facing discoverability | 3 sibling sessions rebuilt shipped features; orient block now points the AI at /charter-help before it reinvents (see decisions/2026-06-09-charter-help-discoverability.md) |
 | 2026-06-09 | /charter-replay filter as committed script | Edge cases (interrupt `[` over-match, image strip-keep) too fiddly to re-derive in-prompt; now unit-tested (see decisions/2026-06-09-replay-filter-as-script.md) |
@@ -83,7 +85,8 @@ _None active._
 8. ~~Replay filter hardening (v0.5.1) — merged 2026-06-09~~ (done)
 9. ~~`/charter-help` + AI-facing discoverability (v0.6.0) — merged 2026-06-09~~ (done)
 10. ~~Self-contained replay-filter (v0.7.0) — merged 2026-06-09~~ (done)
-11. **Think through monorepo support (v2+ scope) — design pass only, no build** **(current)**
+11. **Workflow-hardening arc: v0.8.0 token budget → v0.8.1 dev-sync → v0.9.0 smart recover** **(current — v0.8.0 on feat/token-budget)**
+12. Think through monorepo support (v2+ scope) — design pass only, no build
 11. Await marketplace review acceptance
 12. Update install instructions once marketplace accepted
 13. Monitor for user feedback and bug reports

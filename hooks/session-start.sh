@@ -79,6 +79,33 @@ is_main_branch() {
   [[ "$1" == "main" || "$1" == "master" || -z "$1" ]]
 }
 
+# Emit a file's content, truncated to $2 lines with a marker if longer.
+# $3 is a short description used in the marker. STATUS.md is never passed
+# through this — its key section (What to Work On Next) lives at the bottom
+# and head-truncation would cut it.
+truncate_file() {
+  local file="$1" max="$2" what="$3"
+  local total
+  total=$(wc -l < "$file" | tr -d ' ')
+  if [[ "$total" -gt "$max" ]]; then
+    head -n "$max" "$file"
+    printf '\n(... %s truncated at %s of %s lines — read %s for the rest.)\n' "$what" "$max" "$total" "$file"
+  else
+    cat "$file"
+  fi
+}
+
+# A plan whose header declares itself complete is history, not orientation.
+plan_is_complete() {
+  head -10 "$1" | grep -qiE 'status.*:.*(complete|✅)'
+}
+
+# Line caps for injected files. CONTEXT_MAX matches the context-discipline
+# pruning threshold, so the cap enforces the rule. PLAN_MAX keeps the goal/
+# status header; details are one Read away.
+CONTEXT_MAX=200
+PLAN_MAX=40
+
 STATUS_CONTENT=$(cat "$STATUS_FILE")
 
 # Working memory block (empty unless docs/CONTEXT.md exists)
@@ -87,7 +114,7 @@ if [[ -f "docs/CONTEXT.md" ]]; then
   CONTEXT_BLOCK="
 ## Working Memory
 
-$(cat docs/CONTEXT.md)
+$(truncate_file docs/CONTEXT.md "$CONTEXT_MAX" "working memory — over the ${CONTEXT_MAX}-line cap, prune it per context-discipline")
 
 ---
 "
@@ -106,7 +133,7 @@ if ! is_main_branch "$CURRENT_BRANCH"; then
 
 ### Branch Plan: ${PLAN_NAME}
 
-$(cat "$BRANCH_PLAN")
+$(truncate_file "$BRANCH_PLAN" "$PLAN_MAX" "branch plan")
 
 ---
 "
@@ -120,16 +147,17 @@ No plan file detected for this branch. Run /charter-adopt branches to enable bra
 "
   fi
 else
-  # On main: fall back to surfacing latest plan (legacy behavior)
+  # On main: surface the latest plan only if it's still in progress.
+  # Completed plans are history — STATUS.md already says what's next.
   if [[ -d "docs/plans" ]]; then
     LATEST_PLAN=$(ls -t docs/plans/*.md 2>/dev/null | grep -v 'TEMPLATE.md' | head -1 || true)
-    if [[ -n "$LATEST_PLAN" && -f "$LATEST_PLAN" ]]; then
+    if [[ -n "$LATEST_PLAN" && -f "$LATEST_PLAN" ]] && ! plan_is_complete "$LATEST_PLAN"; then
       PLAN_NAME=$(basename "$LATEST_PLAN")
       PLAN_CONTENT="
 
 ## Active Plan: ${PLAN_NAME}
 
-$(cat "$LATEST_PLAN")"
+$(truncate_file "$LATEST_PLAN" "$PLAN_MAX" "plan")"
     fi
   fi
 fi

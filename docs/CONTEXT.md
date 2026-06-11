@@ -26,8 +26,11 @@
 - **Backward-compat pattern:** capability detection, not version coupling. Plugin checks for optional structures (CONTEXT.md, In-flight Branches section, branch-named plan file); missing → today's behavior. New behavior activates only when structures present. Used for v0.2.0 branches and v0.3.0 context — same playbook.
 - **Charter's own dev convention:** every non-trivial feature goes on a feature branch named `feat/<short-name>`, with a plan at `docs/plans/YYYY-MM-DD-<short-name>.md`. The plan's filename slug must contain the branch tail so the hook auto-matches.
 
+- **Orient block is budget-bounded (v0.8.0):** completed plans skipped on main; plans cap at 40 lines, CONTEXT.md at 200 (the pruning threshold); STATUS.md deliberately uncapped (What-to-Work-On-Next is at the bottom — head-truncation would cut it). Measure with `scripts/measure-overhead.sh`; CI gates an adversarial fixture at 24k chars.
+
 ## Don't Repeat
 
+- **`git stash` clobbers uncommitted tracked edits — including ones you just made with Edit/Write.** Used `git stash -q` mid-task to compare against an old hook version; it silently reverted an uncommitted command rewrite (recovered via `git stash pop`). For point-in-time file comparisons, use `git archive <ref> <path> | tar -x -C $TMP` (no working-tree mutation) — never stash around uncommitted work.
 - **Bash heredoc `<<'PY'` overrides pipes to the same command.** `printf '%s' "$raw" | python3 <<'PY' ... PY` → the heredoc wins; python's stdin is the script, not the piped data. Use `python3 -c "$(cat <<'PY' ... PY)"` instead, or save script to a file.
 - **Python `return` at top level → SyntaxError.** Heredoc-style python scripts need a `def`-wrap or use `sys.exit()` / `break` for early termination.
 - **Don't put `\textcolor{violet}{...}` around a multi-page block in LaTeX** (analog from another project, noted as a general rule). For colored regions spanning floats/sections, use `\begingroup\color{violet}` ... `\endgroup`.

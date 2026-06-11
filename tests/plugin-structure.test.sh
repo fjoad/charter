@@ -169,6 +169,25 @@ else
   assert_eq "present" "missing" "replay-filter auto-finds the transcript (one-shot)"
 fi
 
+# Token budget (v0.8.0): measurement script exists and /charter-cost uses it.
+if [[ -f "$REPO_DIR/scripts/measure-overhead.sh" ]]; then
+  assert_eq "present" "present" "scripts/measure-overhead.sh exists"
+else
+  assert_eq "present" "missing" "scripts/measure-overhead.sh exists"
+fi
+
+if grep -q "measure-overhead.sh" "$REPO_DIR/commands/charter-cost.md" 2>/dev/null; then
+  assert_eq "present" "present" "charter-cost.md measures via measure-overhead.sh"
+else
+  assert_eq "present" "missing" "charter-cost.md measures via measure-overhead.sh"
+fi
+
+if grep -q "truncate_file" "$REPO_DIR/hooks/session-start.sh" && grep -q "plan_is_complete" "$REPO_DIR/hooks/session-start.sh"; then
+  assert_eq "present" "present" "session-start.sh has truncation + completed-plan skip"
+else
+  assert_eq "present" "missing" "session-start.sh has truncation + completed-plan skip"
+fi
+
 if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-recover.md mentions charter-replay as tier-2 fallback"
 else
