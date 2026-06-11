@@ -204,6 +204,25 @@ else
   assert_eq "present" "missing" "finish ritual includes dev-sync step"
 fi
 
+# Smart recover (v0.9.0): single entry point with auto-escalation.
+if grep -q "auto-escalate" "$REPO_DIR/commands/charter-recover.md" && grep -q "replay-filter.py" "$REPO_DIR/commands/charter-recover.md"; then
+  assert_eq "present" "present" "charter-recover auto-escalates to the replay filter"
+else
+  assert_eq "present" "missing" "charter-recover auto-escalates to the replay filter"
+fi
+
+if grep -q "### Daily" "$REPO_DIR/commands/charter-help.md" && grep -q "### Power" "$REPO_DIR/commands/charter-help.md"; then
+  assert_eq "present" "present" "charter-help groups Daily vs Power commands"
+else
+  assert_eq "present" "missing" "charter-help groups Daily vs Power commands"
+fi
+
+if grep -q "why can't an existing command absorb this" "$REPO_DIR/.claude/rules/workflow.md"; then
+  assert_eq "present" "present" "workflow.md has the command-growth guardrail"
+else
+  assert_eq "present" "missing" "workflow.md has the command-growth guardrail"
+fi
+
 if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-recover.md mentions charter-replay as tier-2 fallback"
 else

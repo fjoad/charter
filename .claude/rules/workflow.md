@@ -52,6 +52,7 @@ When a significant design choice is made during implementation (not just brainst
 - Path: `docs/decisions/YYYY-MM-DD-short-title.md`
 - Content: what was decided, what alternatives existed, why this choice
 - "Significant" = changes architecture, adds dependencies, changes interfaces, or would surprise a teammate
+- **If the decision adds a new command, the ADR must answer: "why can't an existing command absorb this?"** Surface growth is a cost; every command added makes the next one easier to justify. Default to extending.
 
 ## Rules
 
