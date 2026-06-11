@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-11 (v0.8.0 in progress)  
+**Last updated:** 2026-06-11 (v0.9.0 shipped — workflow-hardening arc complete)  
 **Current branch:** `main`
 
 ---
@@ -34,6 +34,7 @@
 | Self-contained replay-filter | Done (v0.7.0) | `scripts/replay-filter.py`, `commands/charter-replay.md` | One-shot: auto-finds the session transcript (no path arg), prints dialogue to stdout. |
 | Token budget (enforced) | Done (v0.8.0) | `hooks/session-start.sh`, `scripts/measure-overhead.sh` | Completed plans skipped; plans cap 40 lines, CONTEXT 200; CI budget gate at 24k chars; /charter-cost measures for real. |
 | Dev-sync (staleness) | Done (v0.8.1) | `scripts/dev-sync.sh`, `hooks/session-start.sh`, workflow.md | Release ritual refreshes own install; opt-in version-drift nudge via ~/.config/charter/dev-source. |
+| Smart recover + surface control | Done (v0.9.0) | `commands/charter-recover.md`, `commands/charter-help.md`, workflow.md | Single recovery entry point with auto-escalation; help grouped Daily/Power; new-command ADR guardrail. |
 
 ---
 
@@ -57,6 +58,7 @@ _None active._
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-06-11 | Smart recover: one entry point, auto-escalation | Tier choice was friction at the worst moment; revises v0.4.0 separation reasoning (see decisions/2026-06-11-smart-recover.md) |
 | 2026-06-11 | Dev-sync: staleness fixed via finish ritual + opt-in nudge | Stale installs caused the sibling reinventions; the ritual that caused it now cures it (see decisions/2026-06-11-dev-sync.md) |
 | 2026-06-11 | Orient-block token budget enforced | Completed plans skipped, caps + CI gate; "measure, prune" applied to Charter itself (see decisions/2026-06-11-token-budget.md) |
 | 2026-06-09 | replay-filter.py self-contained (auto-find transcript) | Collapse /charter-replay to a one-shot "run this"; script finds its own session JSONL (see decisions/2026-06-09-replay-self-contained.md) |
@@ -87,8 +89,9 @@ _None active._
 8. ~~Replay filter hardening (v0.5.1) — merged 2026-06-09~~ (done)
 9. ~~`/charter-help` + AI-facing discoverability (v0.6.0) — merged 2026-06-09~~ (done)
 10. ~~Self-contained replay-filter (v0.7.0) — merged 2026-06-09~~ (done)
-11. **Workflow-hardening arc: ~~v0.8.0 token budget~~ → ~~v0.8.1 dev-sync~~ → v0.9.0 smart recover** **(current — v0.9.0 next)**
-12. Think through monorepo support (v2+ scope) — design pass only, no build
+11. ~~Workflow-hardening arc: v0.8.0 token budget → v0.8.1 dev-sync → v0.9.0 smart recover~~ (done — all merged 2026-06-11)
+12. **Use Charter daily; let real friction drive the next feature** **(current)**
+13. Think through monorepo support (v2+ scope) — design pass only, no build
 11. Await marketplace review acceptance
 12. Update install instructions once marketplace accepted
 13. Monitor for user feedback and bug reports

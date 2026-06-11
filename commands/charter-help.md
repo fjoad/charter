@@ -12,42 +12,37 @@ The user wants to see what Charter provides. Present the catalog below, cleanly 
 
 **Charter is a Claude Code plugin that keeps multi-session projects oriented and disciplined.** You're the manager, the AI is the dev team, Charter is the PMO. It runs mostly automatically; these commands are for when you want to trigger something explicitly.
 
-### Setup (once per project)
-
-| Command | What it does |
-|---------|--------------|
-| `/charter-init` | Bootstrap a NEW project — runs a vision intake, scaffolds the living-docs structure. |
-| `/charter-attach` | Attach Charter to an EXISTING codebase — infers vision from the repo, scaffolds non-destructively. |
-| `/charter-preview` | Dry-run of `init` / `attach` / `adopt-*` — lists what would be scaffolded (NEW vs EXISTS), writes nothing. |
-
-### Daily workflow
+### Daily
 
 | Command | What it does |
 |---------|--------------|
 | `/charter-next` | Read STATUS.md and start the next step. |
 | `/charter-finish` | Run the finish ritual — tests, doc updates, commit, standard report. Adapts to main vs feature branch. |
-| `/charter-cost` | Report how many tokens Charter has added this session. |
+| `/charter-recover` | **The recovery command.** After `/compact`, restores orientation from CONTEXT.md + STATUS.md + branch plan — and auto-escalates to a transcript replay if working memory is thin. You never pick a tier; it does. |
+| `/charter-remember` | Capture a fact to `docs/CONTEXT.md` so it survives `/compact`. |
 | `/charter-off` | Disable rituals for the rest of the session — just execute directly. |
 
-### Working memory & post-`/compact` recovery
+### Setup (once per project)
 
 | Command | What it does |
 |---------|--------------|
-| `/charter-remember` | Capture a fact to `docs/CONTEXT.md` so it survives `/compact`. |
-| `/charter-recover` | **Tier 1 recovery** — restore orientation from CONTEXT.md + STATUS.md + active branch plan. Cheapest. Use first. |
-| `/charter-replay` | **Tier 2 recovery** — read the dialogue-only filter of the session transcript (genuine prompts + replies, no tool I/O or harness injections). Use when tier 1 isn't enough. |
+| `/charter-init` | Bootstrap a NEW project — vision intake, scaffolds the living-docs structure. |
+| `/charter-attach` | Attach Charter to an EXISTING codebase — infers vision, scaffolds non-destructively. |
+| `/charter-preview` | Dry-run of `init` / `attach` / `adopt-*` — lists what would be scaffolded, writes nothing. |
+| `/charter-adopt branches` | Opt-in: per-feature-branch plans + branch-aware finish ritual. |
+| `/charter-adopt context` | Opt-in: working-memory doc (`docs/CONTEXT.md`) + discipline rule. |
 
-(Tier 3 — reading the raw `.jsonl` — is an anti-pattern. Don't.)
-
-### Opt-in conventions
+### Power / occasional
 
 | Command | What it does |
 |---------|--------------|
-| `/charter-adopt branches` | Per-feature-branch plans + branch-aware finish ritual. STATUS.md stays conflict-free. |
-| `/charter-adopt context` | Working-memory doc (`docs/CONTEXT.md`) + the discipline rule. Enables `/charter-remember` + `/charter-recover`. |
+| `/charter-replay` | Direct access to the transcript replay (`scripts/replay-filter.py` — one-shot, auto-finds the session, strips tool I/O + harness injections). `/charter-recover` runs this for you when needed; reach for it directly only when you explicitly want the full dialogue. |
+| `/charter-cost` | Measure Charter's token overhead for this session (runs `scripts/measure-overhead.sh` for the real orient-block number). |
+
+(Reading the raw session `.jsonl` is never the answer — it's hundreds of thousands of tokens of tool noise. `/charter-recover` handles recovery.)
 
 ---
 
 ## For the AI reading this
 
-If you are about to build session-recovery, transcript-filtering, branch-management, working-memory, or scaffolding tooling for this project — **stop and check the table above first.** Charter very likely already ships it. Three separate sessions have rebuilt features Charter already had. Reuse `/charter-replay`, `/charter-recover`, `/charter-adopt branches`, etc. instead of reinventing them. If a command does *almost* what's needed, improving the command beats writing a parallel one.
+If you are about to build session-recovery, transcript-filtering, branch-management, working-memory, or scaffolding tooling for this project — **stop and check the table above first.** Charter very likely already ships it. Three separate sessions have rebuilt features Charter already had. Reuse `/charter-recover`, `/charter-adopt branches`, etc. instead of reinventing them. If a command does *almost* what's needed, improving the command beats writing a parallel one.

@@ -1,30 +1,33 @@
 ---
-description: "Restore orientation after /compact. Reads CONTEXT.md + STATUS.md + active branch plan, in that order. Skip the transcript."
+description: "Restore orientation after /compact — the single recovery entry point. Reads CONTEXT.md + STATUS.md + active branch plan; auto-escalates to the transcript replay when working memory is thin. Never reads the raw transcript."
 ---
 
-The user has just run `/compact` (or wants explicit re-orientation). Your job: restore working context without re-reading the conversation transcript.
+The user has just run `/compact` (or wants explicit re-orientation). Your job: restore working context **without re-reading the raw conversation transcript**, choosing the cheapest tier that works — automatically, without asking the user to pick.
 
-**Critical:** Do NOT read the session JSONL or scroll back through prior messages — that costs hundreds of thousands of tokens and is usually wasteful. Use the docs Charter maintains for exactly this purpose.
+## Step 1: Assess working memory, pick the tier yourself
 
-## Three-tier recovery model
+Check `docs/CONTEXT.md`:
 
-- **Tier 1 (this command, cheapest):** read CONTEXT.md + STATUS.md + active branch plan.
-- **Tier 2 (`/charter-replay`, medium):** if CONTEXT.md is sparse / missing nuance, fall back to a filtered transcript read (user turns + assistant text only, skipping all tool I/O). Use when this command's output feels insufficient.
-- **Tier 3 (no command, anti-pattern):** reading the full raw .jsonl is almost never right — it's the 400k+ token waste pattern.
+- **Healthy** (exists, has real entries — more than ~25 lines of actual content, not just `_None recorded yet._` placeholders) → **Tier 1**: proceed with the docs-only read order below.
+- **Thin or missing** (no file, mostly placeholders, or clearly sparse relative to a long session) → **auto-escalate to Tier 2**: run the replay filter directly, no need to ask:
 
-If after this command's read you feel critical context is missing (recent decisions weren't captured, the user emphasized something not in CONTEXT.md), suggest the user run `/charter-replay` rather than scrolling back through tool calls.
+  ```bash
+  python3 "${CLAUDE_PLUGIN_ROOT}/scripts/replay-filter.py"
+  ```
 
-## Recovery read order
+  It auto-finds this session's transcript and prints the genuine dialogue (tool I/O and harness injections stripped; counts to stderr). For very long sessions redirect to `/tmp/session-dialog.txt` and read in chunks. (`/charter-replay` is the direct route to this same script if the user ever wants it explicitly.)
 
-1. **`docs/CONTEXT.md`** — working memory across compactions. Has environment quirks, working patterns, don't-repeats, open questions, user emphases. If this file is missing, tell the user `/charter-adopt context` would have helped — but proceed.
+Tier 3 — reading the raw `.jsonl` — is an anti-pattern. Never do it; it's hundreds of thousands of tokens of tool noise.
 
+## Step 2: Recovery read order (both tiers)
+
+1. **`docs/CONTEXT.md`** — working memory: environment quirks, working patterns, don't-repeats, open questions, user emphases (skip if just read in Step 1).
 2. **`docs/STATUS.md`** — current project state, component table, what to work on next.
-
 3. **Active branch plan** — run `git rev-parse --abbrev-ref HEAD`. If on a feature branch, find the matching plan in `docs/plans/` (filename slug containing the branch tail) and read it. If on main, skip.
 
 ## Do NOT read (unless explicitly cited above)
 
-- The session transcript / JSONL
+- The raw session transcript / JSONL
 - `docs/ARCHITECTURE.md` (only if STATUS or CONTEXT cites structural concern)
 - `docs/VISION.md` (only if the user asks "what are we building")
 - Other plans in `docs/plans/` (only the one for the current branch)
@@ -35,10 +38,10 @@ If after this command's read you feel critical context is missing (recent decisi
 After reading, output 3-5 lines max:
 
 ```
-Recovered:
+Recovered (tier [1|2 — escalated: CONTEXT.md was thin/missing]):
 - Project: [one-line project state from STATUS]
 - Current step: [from STATUS "What to Work On Next" or branch plan]
-- Working memory: [count] entries across [list active sections] (or: empty)
+- Working memory: [count] entries across [list active sections] (or: thin — consider /charter-remember discipline)
 - Open questions / blockers: [from CONTEXT.md Open Questions, or "none"]
 - Next: [continue last task / await user input]
 ```

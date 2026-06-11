@@ -35,15 +35,11 @@ Good: "Llama: never use `apply_chat_template` — adds `<|begin_of_text|>` + dat
 
 If you anticipate `/compact` (context near full) or see that it just happened, capture anything important to CONTEXT.md *before* losing it. The `/charter-remember "..."` command is the explicit version.
 
-## Three-tier recovery model (post-/compact)
+## Recovery (post-/compact)
 
-When the user runs `/compact` and you need to restore context, use the cheapest tier that works:
+`/charter-recover` is the single entry point — it reads CONTEXT.md + STATUS.md + the active branch plan, and **auto-escalates** to the transcript replay (`scripts/replay-filter.py`) when CONTEXT.md is thin or missing. You don't pick a tier; it does. (`/charter-replay` is direct access to the replay when explicitly wanted.) Reading the raw .jsonl is an anti-pattern — it burned 400k+ tokens in a real case.
 
-1. **`/charter-recover`** — reads CONTEXT.md + STATUS.md + active branch plan. Use first.
-2. **`/charter-replay`** — reads the dialogue-only filter of this session's transcript (user turns + your text replies, no tool I/O). Use when CONTEXT.md is sparse.
-3. **Reading the raw .jsonl** — almost never right; what burned 400k+ tokens in a real case before. Treat as anti-pattern.
-
-If CONTEXT.md was well-maintained during the session, tier 1 is sufficient. The discipline above is what makes tier 1 work; without it, you'll end up at tier 2.
+The discipline above is what keeps recovery cheap: a well-maintained CONTEXT.md means recover never needs the transcript.
 
 ## Pruning
 
