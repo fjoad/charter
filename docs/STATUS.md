@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-11 (v0.9.0 shipped — workflow-hardening arc complete)  
+**Last updated:** 2026-06-11 (v0.9.1 shipped)  
 **Current branch:** `main`
 
 ---
@@ -33,7 +33,7 @@
 | Discoverability (/charter-help) | Done (v0.6.0) | `commands/charter-help.md`, `hooks/session-start.sh` | Command catalog + AI-facing orient-block pointer. Test-enforced sync. Addresses 3 sibling-session reinventions. |
 | Self-contained replay-filter | Done (v0.7.0) | `scripts/replay-filter.py`, `commands/charter-replay.md` | One-shot: auto-finds the session transcript (no path arg), prints dialogue to stdout. |
 | Token budget (enforced) | Done (v0.8.0) | `hooks/session-start.sh`, `scripts/measure-overhead.sh` | Completed plans skipped; plans cap 40 lines, CONTEXT 200; CI budget gate at 24k chars; /charter-cost measures for real. |
-| Dev-sync (staleness) | Done (v0.8.1) | `scripts/dev-sync.sh`, `hooks/session-start.sh`, workflow.md | Release ritual refreshes own install; opt-in version-drift nudge via ~/.config/charter/dev-source. |
+| Dev-sync (staleness) | Done (v0.8.1, prune v0.9.1) | `scripts/dev-sync.sh`, `hooks/session-start.sh`, workflow.md | Release ritual refreshes own install; opt-in version-drift nudge; v0.9.1 prunes orphan cache version dirs. |
 | Smart recover + surface control | Done (v0.9.0) | `commands/charter-recover.md`, `commands/charter-help.md`, workflow.md | Single recovery entry point with auto-escalation; help grouped Daily/Power; new-command ADR guardrail. |
 
 ---
