@@ -158,7 +158,7 @@ This is what `tests/e2e-install.sh` uses. It reflects your working tree immediat
 ```bash
 bash scripts/dev-sync.sh
 ```
-This wraps the two supported CLI calls (`claude plugin marketplace update fjoad-charter` + `claude plugin update charter@fjoad-charter`) with a pushed-state check first. It's a mandatory finish-ritual step after pushing a release tag. A new session is required for the reloaded plugin to take effect.
+This wraps the two supported CLI calls (`claude plugin marketplace update fjoad-charter` + `claude plugin update charter@fjoad-charter`) with a pushed-state check first, then prunes orphaned version dirs from the plugin cache (keeping only the active one — cleanup of unreferenced files, not state surgery). It's a mandatory finish-ritual step after pushing a release tag. A new session is required for the reloaded plugin to take effect.
 
 **Staleness nudge (opt-in):** put the source repo path in `~/.config/charter/dev-source` (or export `CHARTER_DEV_SOURCE`). The session-start hook then compares the installed plugin's version against the source on every session and injects a one-line nudge when they differ. Zero cost when in sync.
 

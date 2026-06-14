@@ -223,6 +223,14 @@ else
   assert_eq "present" "missing" "workflow.md has the command-growth guardrail"
 fi
 
+# dev-sync prune (v0.9.1): prune function + source guard so tests don't fire the CLI.
+if grep -q "prune_cache" "$REPO_DIR/scripts/dev-sync.sh" \
+   && grep -qF 'BASH_SOURCE[0]' "$REPO_DIR/scripts/dev-sync.sh"; then
+  assert_eq "present" "present" "dev-sync.sh has prune_cache behind a source guard"
+else
+  assert_eq "present" "missing" "dev-sync.sh has prune_cache behind a source guard"
+fi
+
 if grep -q "charter-replay" "$REPO_DIR/commands/charter-recover.md" 2>/dev/null; then
   assert_eq "present" "present" "charter-recover.md mentions charter-replay as tier-2 fallback"
 else

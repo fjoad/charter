@@ -26,7 +26,8 @@
 - **Backward-compat pattern:** capability detection, not version coupling. Plugin checks for optional structures (CONTEXT.md, In-flight Branches section, branch-named plan file); missing → today's behavior. New behavior activates only when structures present. Used for v0.2.0 branches and v0.3.0 context — same playbook.
 - **Charter's own dev convention:** every non-trivial feature goes on a feature branch named `feat/<short-name>`, with a plan at `docs/plans/YYYY-MM-DD-<short-name>.md`. The plan's filename slug must contain the branch tail so the hook auto-matches.
 
-- **Dev-sync closes the staleness loop (v0.8.1):** release finish ritual now ends with `bash scripts/dev-sync.sh`; opt-in nudge via `~/.config/charter/dev-source` (file containing the source repo path) makes every session warn when installed != source version.
+- **Dev-sync closes the staleness loop (v0.8.1):** release finish ritual now ends with `bash scripts/dev-sync.sh`; opt-in nudge via `~/.config/charter/dev-source` (file containing the source repo path) makes every session warn when installed != source version. v0.9.1 added orphan-cache pruning (each `claude plugin update` leaves the prior version dir behind; prune keeps only the active one).
+- **Sourcing a `set -euo pipefail` script leaks `set -e` into the caller.** dev-sync.sh defines testable functions; putting `set -e` at top level broke the test runner (an intentional non-zero exit elsewhere became fatal). Fix: put `set -euo pipefail` inside the `[[ BASH_SOURCE[0] == $0 ]]` direct-execution guard, not at top level. Pattern for any sourced-for-testing shell script.
 - **Orient block is budget-bounded (v0.8.0):** completed plans skipped on main; plans cap at 40 lines, CONTEXT.md at 200 (the pruning threshold); STATUS.md deliberately uncapped (What-to-Work-On-Next is at the bottom — head-truncation would cut it). Measure with `scripts/measure-overhead.sh`; CI gates an adversarial fixture at 24k chars.
 
 ## Don't Repeat
