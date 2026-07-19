@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "charter",
-      "description": "Charter enforces session-to-session continuity for AI-assisted development. Scaffolds living docs (VISION/STATUS/ARCHITECTURE) into any project, orients Claude at session start, classifies every request by size and applies matching ritual depth, and enforces finish rituals. Requires superpowers.",
+      "description": "Charter enforces session-to-session continuity for AI-assisted development. Scaffolds shared Claude/Codex living docs, orients Claude at session start, preserves compact working memory and optional causal evidence, classifies every request by size, and enforces finish rituals. Requires superpowers.",
       "source": "./",
       "category": "productivity"
     }

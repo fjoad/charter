@@ -1,21 +1,29 @@
-# Charter — Operational Guide
+# Charter — Shared Agent Operational Guide
 
-> This is the canonical guide for AI assistants working on Charter. CLAUDE.md, Codex CLI, Cursor, and other tools should be pointed here.
+> Canonical bootstrap for **Claude, Codex, and other AI assistants** working on Charter. Codex reads
+> this file directly; `CLAUDE.md` imports it for Claude. `.claude/rules/` automates Claude-specific
+> rituals, but no project fact should exist only there.
 
 ---
 
 ## What This Project Is
 
-Charter is a Claude Code plugin that enforces session-to-session continuity through living docs and lightweight rituals. See [docs/VISION.md](docs/VISION.md) for the full thesis.
+Charter is a Claude Code plugin whose project scaffold works across Claude, Codex, and other agents.
+It enforces session-to-session continuity through living docs and lightweight rituals. Claude receives
+automatic hooks; other agents recover the same state through the shared `AGENTS.md` reading contract.
+See [docs/VISION.md](docs/VISION.md) for the full thesis.
 
 ---
 
 ## Reading Order (Every Session)
 
 1. **[docs/STATUS.md](docs/STATUS.md)** — current state, what's done, what's next
-2. **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — plugin layout, hook flow, template structure
-3. **[docs/VISION.md](docs/VISION.md)** — if you need to understand the thesis behind a decision
-4. **Active plan in [docs/plans/](docs/plans/)** — if a step is in progress
+2. **[docs/CONTEXT.md](docs/CONTEXT.md)** — compact working memory, don't-repeats, user emphases
+3. **`docs/EVIDENCE-AND-LEARNINGS.md` if present** — read when STATUS/CONTEXT cites it, when revisiting
+   a corrected/contested claim, or when interpreting a discriminating experiment or debugging result
+4. **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** — plugin layout, hook flow, template structure
+5. **[docs/VISION.md](docs/VISION.md)** — if you need to understand the thesis behind a decision
+6. **Active plan in [docs/plans/](docs/plans/)** — if a step is in progress
 
 If there's no active plan for the current step, create one before writing code.
 
@@ -24,9 +32,24 @@ If there's no active plan for the current step, create one before writing code.
 ## Session Start Ritual
 
 1. Read STATUS.md — find current step and "What to Work On Next"
-2. Read ARCHITECTURE.md — understand how the current step fits
-3. Check `docs/plans/` — is there an existing plan for the current step?
-4. If plan exists → execute it. If not → create one first.
+2. Read CONTEXT.md — recover active caveats and don't-repeats
+3. Read EVIDENCE-AND-LEARNINGS.md only when STATUS/CONTEXT cites it, a claim was corrected/contested, or
+   a discriminating experiment/debugging result needs interpretation
+4. Read ARCHITECTURE.md — understand how the current step fits
+5. Check `docs/plans/` — is there an existing plan for the current step?
+6. If plan exists → execute it. If not → create one first.
+
+## Evidence Discipline
+
+- Use **VERIFIED**, **OBSERVED**, **INFERRED**, **HYPOTHESIS**, **INVALIDATED**, and **OPEN** consistently.
+- Rank evidence by directness, discriminating power, and provenance—not source type or recency alone.
+  For technical claims, prefer direct reproduction/artifacts and dated audits over derived summaries. For
+  requirements and intent, a direct user statement is primary evidence even when recovered from a transcript.
+- When evidence overturns a conclusion, preserve the causal chain: former belief, disconfirming evidence,
+  root cause, current conclusion, confidence, and remaining uncertainty. Do not silently rewrite history.
+- `STATUS.md` says what is true now. `CONTEXT.md` is compact/prunable active memory. When adopted,
+  `EVIDENCE-AND-LEARNINGS.md` keeps durable causal corrections. Decisions record deliberate choices.
+- Update the evidence record when a mistake would otherwise be plausibly relearned by a future session.
 
 ---
 
@@ -69,7 +92,10 @@ Standard report format:
 
 **Branch awareness (v0.2.0+):** On feature branches, `/charter-finish` updates only the branch plan, not STATUS.md component sections. The session-start hook surfaces the matching plan for the current branch (filename slug match or YAML frontmatter `branch:` key). See [docs/ARCHITECTURE.md § Branch Handling](docs/ARCHITECTURE.md#branch-handling) for the full design.
 
-**Testing:** `npm test` (or `bash scripts/verify-plugin.sh`) runs the fast 44-assertion suite — structural checks plus hook behavior in isolated tmpdirs. Before publishing a release, run `bash tests/e2e-install.sh` to spawn real Claude sessions with the local plugin and verify it actually loads (11 assertions across 4 scenarios, ~2 min, small token cost).
+**Testing:** `npm test` (or `bash scripts/verify-plugin.sh`) runs the fast 150-assertion suite — 29 structural
+checks plus 121 hook-behavior assertions in isolated tmpdirs. Before publishing a release, run `bash tests/e2e-install.sh`
+to spawn real Claude sessions with the local plugin and verify it actually loads (14 assertions across 5
+scenarios, ~2 min, small token cost).
 
 **Working memory (v0.3.0+):** `docs/CONTEXT.md` is the AI's working memory across compactions. Maintained inline per `.claude/rules/context-discipline.md` whenever a non-obvious finding surfaces. Auto-loaded by `session-start.sh`. After `/compact`, run `/charter-recover` to restore orientation from CONTEXT.md + STATUS.md + active branch plan, *without* re-reading the transcript. Use `/charter-remember "..."` for explicit captures. See [docs/ARCHITECTURE.md § Working Memory](docs/ARCHITECTURE.md#working-memory-contextmd).
 
@@ -77,7 +103,13 @@ Standard report format:
 
 **Discoverability (v0.6.0+):** `/charter-help` lists every command, opt-in convention, and recovery tier. The session-start orient block now tells the AI to check `/charter-help` before building recovery / transcript / branch / working-memory / scaffolding tooling — Charter likely already ships it. Reuse or improve the existing command rather than reinventing it.
 
-**Preview / dry-run (v0.5.0+):** `/charter-preview attach` (or `init`, `adopt-branches`, `adopt-context`) lists what would be scaffolded — NEW vs EXISTS per file — without writing anything. Use when evaluating Charter on a new project.
+**Preview / dry-run (v0.5.0+):** `/charter-preview attach` (or `init`, `adopt-branches`,
+`adopt-context`, `adopt-evidence`) lists what would be scaffolded — NEW vs EXISTS per file — without
+writing anything. Use when evaluating Charter on a new project.
+
+**Durable causal evidence (v0.10.0+):** `/charter-adopt evidence` adds an optional shared record for
+former beliefs, disconfirming evidence, root causes, corrected conclusions, confidence, and uncertainty.
+It complements CONTEXT.md rather than expanding permanent session-start context.
 
 **CONTEXT.md is branch-scoped (v0.3.0, articulated v0.5.0):** unlike STATUS.md component sections (which only update on main), CONTEXT.md edits ARE allowed on feature branches. Each branch has its own working memory. On merge, prune branch-specific entries that don't generalize.
 
@@ -109,6 +141,8 @@ Charter's own skills (in `skills/`):
 |----------|------|
 | What are we building and why? | [docs/VISION.md](docs/VISION.md) |
 | Where are we now? What's next? | [docs/STATUS.md](docs/STATUS.md) |
+| What must the current session remember? | [docs/CONTEXT.md](docs/CONTEXT.md) |
+| Why did a belief change? How strong is the evidence? | `docs/EVIDENCE-AND-LEARNINGS.md` (if adopted) |
 | How does the plugin work? | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | The pitch / philosophy | [docs/MANIFESTO.md](docs/MANIFESTO.md) |
 | Past decisions with rationale | [docs/decisions/](docs/decisions/) |

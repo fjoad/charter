@@ -67,6 +67,8 @@ On feature branches:
 - These sections only update on merge to main (handled by `/charter-finish` on the main branch)
 - This avoids merge conflicts and keeps STATUS.md as the canonical "shipped" state
 - **CONTEXT.md edits ARE allowed on feature branches.** It's branch-scoped working memory by design — each branch has its own. Capture branch-specific learnings freely. On merge, prune branch-specific entries that don't generalize.
+- **EVIDENCE-AND-LEARNINGS.md edits ARE allowed on feature branches** when adopted. Durable causal
+  evidence travels with the work that produced it and is reviewed during merge.
 
 When starting work on a new feature:
 1. Create the branch: `git checkout -b feat/<short-name>`

@@ -24,6 +24,9 @@ Tier 3 — reading the raw `.jsonl` — is an anti-pattern. Never do it; it's hu
 1. **`docs/CONTEXT.md`** — working memory: environment quirks, working patterns, don't-repeats, open questions, user emphases (skip if just read in Step 1).
 2. **`docs/STATUS.md`** — current project state, component table, what to work on next.
 3. **Active branch plan** — run `git rev-parse --abbrev-ref HEAD`. If on a feature branch, find the matching plan in `docs/plans/` (filename slug containing the branch tail) and read it. If on main, skip.
+4. **`docs/EVIDENCE-AND-LEARNINGS.md` on demand** — read the relevant section only when CONTEXT/STATUS
+   cites it, the recovery involves a corrected or contradictory claim, or the next task requires
+   interpreting experimental/debugging evidence. Do not inject the full durable record every session.
 
 ## Do NOT read (unless explicitly cited above)
 
@@ -32,6 +35,7 @@ Tier 3 — reading the raw `.jsonl` — is an anti-pattern. Never do it; it's hu
 - `docs/VISION.md` (only if the user asks "what are we building")
 - Other plans in `docs/plans/` (only the one for the current branch)
 - Decision records (only if cited)
+- `docs/EVIDENCE-AND-LEARNINGS.md` (only under the on-demand conditions above)
 
 ## Report
 

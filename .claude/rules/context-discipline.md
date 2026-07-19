@@ -17,6 +17,8 @@ Append to CONTEXT.md when ANY of these happen:
 - Project state → STATUS.md
 - Architecture → ARCHITECTURE.md
 - Design choices with alternatives → `docs/decisions/`
+- Durable causal corrections (former belief → disconfirming evidence → root cause → new conclusion) →
+  `docs/EVIDENCE-AND-LEARNINGS.md` when adopted. Leave only a terse pointer in CONTEXT.md if active.
 - Trivial output, single test passes, command exit codes
 - Genuinely ephemeral state
 
@@ -39,4 +41,6 @@ The discipline above is what keeps recovery cheap: a well-maintained CONTEXT.md 
 
 ## Pruning
 
-When CONTEXT.md crosses ~200 lines: promote design items to decisions/, empirical items to findings, delete stale entries. CONTEXT.md is alive, not a log.
+When CONTEXT.md crosses ~200 lines: promote design items to decisions/, durable causal corrections to
+EVIDENCE-AND-LEARNINGS.md when adopted, other empirical items to findings, and delete stale entries.
+CONTEXT.md is alive, not a log.

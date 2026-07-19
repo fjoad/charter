@@ -1,7 +1,7 @@
 {
   "name": "charter",
-  "version": "0.9.1",
-  "description": "AI-assisted project discipline plugin for Claude Code and Codex CLI",
+  "version": "0.10.0",
+  "description": "Claude Code project-discipline plugin with an agent-neutral scaffold for Claude and Codex",
   "type": "module",
   "author": "fjoad",
   "license": "MIT",

@@ -80,6 +80,58 @@ else
   assert_eq "present" "missing" "charter-adopt.md has context convention block"
 fi
 
+if grep -q "Convention: \`evidence\`" "$REPO_DIR/commands/charter-adopt.md" \
+   && grep -q "EVIDENCE-AND-LEARNINGS.md" "$REPO_DIR/commands/charter-adopt.md"; then
+  assert_eq "present" "present" "charter-adopt.md has evidence convention block"
+else
+  assert_eq "present" "missing" "charter-adopt.md has evidence convention block"
+fi
+
+if grep -q "adopt-evidence" "$REPO_DIR/commands/charter-preview.md" \
+   && grep -q "/charter-adopt evidence" "$REPO_DIR/commands/charter-help.md"; then
+  assert_eq "present" "present" "preview/help expose the evidence convention"
+else
+  assert_eq "present" "missing" "preview/help expose the evidence convention"
+fi
+
+# Cross-agent bootstrap: Claude imports the same AGENTS.md that Codex reads.
+if grep -qx '@AGENTS.md' "$REPO_DIR/CLAUDE.md" \
+   && grep -qx '@AGENTS.md' "$REPO_DIR/template/CLAUDE.md"; then
+  assert_eq "present" "present" "root + template CLAUDE.md explicitly import AGENTS.md"
+else
+  assert_eq "present" "missing" "root + template CLAUDE.md explicitly import AGENTS.md"
+fi
+
+if grep -q "Claude, Codex" "$REPO_DIR/template/AGENTS.md" \
+   && grep -q "no project fact should exist only" "$REPO_DIR/template/AGENTS.md"; then
+  assert_eq "present" "present" "template AGENTS.md defines the shared ownership boundary"
+else
+  assert_eq "present" "missing" "template AGENTS.md defines the shared ownership boundary"
+fi
+
+# Causal evidence stays durable while CONTEXT remains compact/prunable.
+if grep -q "VERIFIED" "$REPO_DIR/commands/charter-adopt.md" \
+   && grep -q "INVALIDATED" "$REPO_DIR/commands/charter-adopt.md" \
+   && grep -q "Former belief" "$REPO_DIR/commands/charter-adopt.md"; then
+  assert_eq "present" "present" "evidence scaffold includes labels + causal correction shape"
+else
+  assert_eq "present" "missing" "evidence scaffold includes labels + causal correction shape"
+fi
+
+if grep -q "EVIDENCE-AND-LEARNINGS.md" "$REPO_DIR/.claude/rules/context-discipline.md" \
+   && grep -q "EVIDENCE-AND-LEARNINGS.md" "$REPO_DIR/template/.claude/rules/context-discipline.md"; then
+  assert_eq "present" "present" "context discipline promotes durable causal findings to evidence"
+else
+  assert_eq "present" "missing" "context discipline promotes durable causal findings to evidence"
+fi
+
+if grep -q "EVIDENCE-AND-LEARNINGS.md" "$REPO_DIR/commands/charter-recover.md" \
+   && grep -qi "on demand\|cites it\|contradict" "$REPO_DIR/commands/charter-recover.md"; then
+  assert_eq "present" "present" "recovery reads durable evidence only when relevant"
+else
+  assert_eq "present" "missing" "recovery reads durable evidence only when relevant"
+fi
+
 if grep -q "categorize the content" "$REPO_DIR/commands/charter-remember.md" 2>/dev/null || grep -qi "Categorize" "$REPO_DIR/commands/charter-remember.md"; then
   assert_eq "present" "present" "charter-remember.md has categorization step"
 else
@@ -271,6 +323,13 @@ if grep -q "CONTEXT.md.* updates ARE allowed" "$REPO_DIR/commands/charter-finish
   assert_eq "present" "present" "charter-finish.md feature-branch flow permits CONTEXT.md updates"
 else
   assert_eq "present" "missing" "charter-finish.md feature-branch flow permits CONTEXT.md updates"
+fi
+
+if grep -q "EVIDENCE-AND-LEARNINGS.md.* updates ARE allowed" "$REPO_DIR/commands/charter-finish.md" 2>/dev/null \
+   && grep -q "EVIDENCE-AND-LEARNINGS.md edits ARE allowed" "$REPO_DIR/template/.claude/rules/workflow.md" 2>/dev/null; then
+  assert_eq "present" "present" "feature-branch flow permits durable evidence updates"
+else
+  assert_eq "present" "missing" "feature-branch flow permits durable evidence updates"
 fi
 
 # --- Version sync (also checked by verify-plugin.sh, but cheap to assert here) ---

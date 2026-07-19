@@ -2,7 +2,7 @@
 
 <!-- AI working memory across compactions. Maintained inline per .claude/rules/context-discipline.md. Run /charter-recover after /compact. Keep entries terse. -->
 
-**Last updated:** 2026-05-12 (v0.4.0)
+**Last updated:** 2026-07-19 (v0.10.0 work)
 
 ---
 
@@ -13,6 +13,12 @@
 - **`git init` without commit leaves `HEAD` unborn.** `git rev-parse --abbrev-ref HEAD` returns `"HEAD"` instead of `"main"`. Test helpers that create tmpdirs must do an initial commit before checking branch name, otherwise branch-aware code paths misfire.
 
 ## Working Patterns
+
+- **Cross-agent ownership:** `AGENTS.md` is canonical; `CLAUDE.md` imports it; `.claude/rules/` automates
+  Claude but must not hold unique project facts. Codex follows the same shared reading order directly.
+- **Memory layers:** STATUS = current truth; CONTEXT = compact/prunable active memory; optional
+  EVIDENCE-AND-LEARNINGS = durable causal corrections; decisions = deliberate choices. Evidence is read
+  on demand, never auto-injected as permanent token overhead.
 
 - **CONTEXT.md is branch-scoped working memory by design.** Each feature branch has its own. On merge to main, prune branch-specific entries that don't generalize. Articulated explicitly in v0.5.0 (ARCHITECTURE.md § Working Memory + Branch Discipline rules).
 - **`/charter-preview <mode>` for dry-run.** Before `/charter-init` or `/charter-attach` writes anything, `/charter-preview attach` lists every candidate file from `template/` and marks each NEW or EXISTS. Use when evaluating Charter on a new project.
@@ -52,6 +58,8 @@ _None active._
 - **Backward compatibility is the most important property.** Existing Charter projects must work identically after a plugin update. Branch handling, context-doc — every feature is purely additive via capability detection.
 - **Seamless updates.** Users shouldn't need to relearn Charter or run a migration. New behavior either auto-activates when structures appear, or is opt-in via `/charter-adopt <convention>`.
 - **Dogfood Charter's own conventions on Charter.** Use feature branches with matching plans; use CONTEXT.md for working memory; run the same finish ritual.
+- **Real cross-agent support.** A project attached with Charter should give Claude and Codex the same
+  durable context, including why conclusions changed, without requiring either agent to reread chats.
 
 ---
 

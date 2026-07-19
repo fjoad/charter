@@ -1,15 +1,16 @@
 # Charter — Architecture
 
-**Last updated:** 2026-05-12 (v0.3.0)
+**Last updated:** 2026-07-19 (v0.10.0: shared-agent bootstrap + durable evidence convention)
 
 ---
 
 ## Overview
 
-Charter is a Claude Code plugin. It has two parallel components:
+Charter is a Claude Code plugin whose scaffold is agent-neutral. It has two parallel components:
 
 - **Plugin components** (`skills/`, `commands/`, `hooks/`, `agents/`) — installed into Claude Code, runs in any project
-- **`template/`** — scaffolded into user projects when they run `/charter-init` or `/charter-attach`
+- **`template/`** — shared project contract scaffolded for Claude, Codex, and other assistants when users
+  run `/charter-init` or `/charter-attach`
 
 Charter layers on top of [superpowers](https://github.com/obra/superpowers). It doesn't replace superpowers skills — it coordinates when to invoke them.
 
@@ -69,6 +70,19 @@ Classify this request as trivial/small/medium/major and apply matching ritual fr
 
 This fires silently. User doesn't see it. Claude applies it before responding.
 
+## Cross-agent bootstrap (v0.10.0)
+
+Charter has one canonical project instruction file: **`AGENTS.md`**.
+
+- **Claude:** `CLAUDE.md` uses Claude Code's `@AGENTS.md` import, then `.claude/rules/` automates
+  session/turn rituals. No unique project fact belongs only in `CLAUDE.md` or `.claude/rules/`.
+- **Codex:** discovers `AGENTS.md` directly and follows its shared reading order for STATUS, CONTEXT,
+  on-demand evidence, architecture, vision, and active plans.
+- **Other assistants:** can be pointed at the same `AGENTS.md` rather than maintaining another copy.
+
+Hooks remain Claude Code-only. Cross-agent compatibility means shared project truth and recovery
+semantics, not pretending Codex executes Claude's plugin hooks.
+
 ---
 
 ## Working Memory (CONTEXT.md)
@@ -114,6 +128,28 @@ CONTEXT.md is a tracked file in `docs/`, so it travels with the branch like any 
 - **CONTEXT.md edits ARE allowed on feature branches** — unlike STATUS.md component sections. CONTEXT is branch-scoped working memory; STATUS is canonical project state. Different roles, different rules.
 
 This was implicit in the v0.3.0 design (CONTEXT.md is just a file, files live on branches) but never said out loud. Documented here so the branch discipline rule and finish ritual are unambiguous.
+
+## Durable causal evidence (v0.10.0, opt-in)
+
+`/charter-adopt evidence` adds `docs/EVIDENCE-AND-LEARNINGS.md` for knowledge that must survive CONTEXT
+pruning. It records former beliefs, discriminating evidence, root causes, corrected conclusions,
+confidence labels, remaining uncertainty, and source artifacts.
+
+The layers have deliberately different lifecycles:
+
+| Layer | Question | Lifecycle |
+|---|---|---|
+| `STATUS.md` | What is true and next now? | Continuously rewritten |
+| `CONTEXT.md` | What must the current branch/session remember? | Compact, pruned at ~200 lines |
+| `EVIDENCE-AND-LEARNINGS.md` | Why did a belief change and how strong is the evidence? | Durable; supersession preserved |
+| `decisions/` | What did we deliberately choose and why? | Durable ADRs |
+
+The evidence document is **not auto-injected** by `session-start.sh`; a growing historical record should
+not become a permanent token tax. `AGENTS.md` and `/charter-recover` route assistants to relevant sections
+on demand when a result is disputed, a conclusion was corrected, or STATUS/CONTEXT cites it.
+
+Adoption is additive and idempotent. Existing projects behave identically until they run
+`/charter-adopt evidence`; current templates are evidence-aware but tolerate the file being absent.
 
 ---
 
@@ -172,6 +208,7 @@ template/
     VISION.md           # Skeleton with <!-- GUIDANCE: --> comments
     STATUS.md           # Seeded: "Step 0: vision approved; next: architecture"
     ARCHITECTURE.md     # Skeleton with section headers
+    CONTEXT.md          # Compact working memory across compactions
     decisions/
       TEMPLATE.md       # ADR skeleton
     plans/
@@ -182,13 +219,16 @@ template/
       workflow.md       # Per-step cycle + finish checklist (generic)
       turn-ritual.md    # Per-turn tier classifier (new — not in legacy arc)
       testing.md        # Testing discipline (generic, no Python specifics)
+      context-discipline.md # CONTEXT routing + durable-evidence promotion
     settings.json       # Minimal safe permission allowlist
-  AGENTS.md             # Canonical operational guide (model-agnostic)
-  CLAUDE.md             # One-line pointer to AGENTS.md
+  AGENTS.md             # Canonical shared operational guide (Claude/Codex/other agents)
+  CLAUDE.md             # Explicit @AGENTS.md import; no duplicate project truth
   .gitignore            # Standard patterns
 ```
 
 When `/charter-init` or `/charter-attach` runs, this tree is copied into the user's project. Existing files are never overwritten (brownfield safe).
+`EVIDENCE-AND-LEARNINGS.md` is deliberately not in the default tree; `/charter-adopt evidence` proposes
+it only for projects that need durable causal memory.
 
 ---
 
@@ -231,6 +271,16 @@ User opens Claude Code in Charter-managed project
   → Outputs { "additionalContext": "<orient block>" }
   → Claude receives orient block before first user message
   → Claude knows: current step, what's next, active plan
+```
+
+For Codex, the equivalent flow is file-based rather than hook-based:
+
+```text
+Codex opens the project
+  → discovers AGENTS.md
+  → follows the shared reading order
+  → reads STATUS + CONTEXT, and evidence on demand
+  → works from the same canonical project state as Claude
 ```
 
 ---
@@ -282,7 +332,9 @@ Invoke the brief-intake skill to gather vision, then scaffold the Charter templa
 
 **Add a new skill:** Create `skills/<name>/SKILL.md` with proper frontmatter.
 
-**Add a new opt-in convention:** Extend `commands/charter-adopt.md` with a new convention block. Each convention should: detect whether it's already adopted, propose changes to user files one at a time, ask before each, report what changed.
+**Add a new opt-in convention:** Extend `commands/charter-adopt.md`, `charter-preview.md`, and
+`charter-help.md`. Each convention should detect whether it is already adopted, propose changes one at a
+time, ask before each, report what changed, and preserve capability-detected backward compatibility.
 
 ---
 
@@ -295,17 +347,18 @@ Two tiers of tests live in `tests/`:
 Runs on every commit (via CI) and locally with `npm test`. Fast (~1s). Covers:
 
 - Plugin file structure (commands are `.md` with frontmatter, no `{{args}}`, version sync)
-- `hooks/session-start.sh` and `hooks/turn-nudge.sh` behavior in isolated tmpdirs (32 assertions)
+- `hooks/session-start.sh` and `hooks/turn-nudge.sh` behavior in isolated tmpdirs (121 assertions)
 - JSON validity of `plugin.json`, `package.json`, `hooks.json`
 - Hook command paths reference real files
 - Required content in `commands/*.md`
 
 ### End-to-end install (`tests/e2e-install.sh`)
 
-Spawns 4 real `claude -p --plugin-dir <local-charter>` sessions, each in a fresh tmpdir, and asserts on the SessionStart hook's `additionalContext` output. This is the only test that verifies the plugin actually loads into Claude Code. Slow (~30s per scenario) and costs a small amount in API tokens, so it is **not** run by `verify-plugin.sh` automatically — run it manually before publishing a release:
+Spawns 5 real `claude -p --plugin-dir <local-charter>` sessions, each in a fresh tmpdir, and asserts on the SessionStart hook's `additionalContext` output. This is the only test that verifies the plugin actually loads into Claude Code. Slow (~30s per scenario) and costs a small amount in API tokens, so it is **not** run by `verify-plugin.sh` automatically — run it manually before publishing a release:
 
 ```bash
 bash tests/e2e-install.sh
 ```
 
-11 assertions cover: no-scaffold hint, main-branch orient, feature-branch matching plan, feature-branch no-plan soft hint.
+14 assertions cover: no-scaffold hint, main-branch orient, feature-branch matching plan, feature-branch
+no-plan soft hint, and CONTEXT.md injection.

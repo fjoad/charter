@@ -1,13 +1,13 @@
 ---
-description: "Adopt an optional Charter convention into this project. Idempotent — safe to run multiple times. Currently supported: 'branches', 'context'."
-argument-hint: "<convention>  (e.g., branches | context)"
+description: "Adopt an optional Charter convention into this project. Idempotent — safe to run multiple times. Supported: branches, context, evidence."
+argument-hint: "<convention>  (branches | context | evidence)"
 ---
 
 The user is opting into a Charter convention.
 
 $ARGUMENTS
 
-Parse the argument as the convention name. Currently supported: `branches`, `context`.
+Parse the argument as the convention name. Currently supported: `branches`, `context`, `evidence`.
 
 If the argument is empty or unrecognized, list the supported conventions and stop:
 
@@ -15,6 +15,7 @@ If the argument is empty or unrecognized, list the supported conventions and sto
 Supported conventions:
   branches — enable branch-aware workflows (plans tied to feature branches, branch-aware finish ritual)
   context  — enable working-memory doc (docs/CONTEXT.md surviving /compact, with /charter-remember and /charter-recover commands)
+  evidence — enable durable causal memory (why beliefs changed, evidence strength, invalidated conclusions)
 ```
 
 ---
@@ -199,4 +200,120 @@ After both changes are applied (or skipped), report:
 - CONTEXT.md: [created / skipped — already present / skipped — user declined]
 - context-discipline.md: [created / skipped — already present / skipped — user declined]
 - Next: the AI will now maintain CONTEXT.md inline during sessions. After /compact, run /charter-recover to restore orientation. Use /charter-remember "..." for explicit captures.
+```
+
+---
+
+## Convention: `evidence`
+
+Goal: preserve durable causal and epistemic context that should not be pruned from `CONTEXT.md`: what was
+believed, what evidence changed it, the root cause, the corrected conclusion, and remaining uncertainty.
+This is useful for research, benchmarks, complex debugging, incident-heavy systems, and any project where
+a plausible wrong conclusion could be relearned by a future session.
+
+Make the following changes, **asking the user before each one**:
+
+### Change 1: Scaffold docs/EVIDENCE-AND-LEARNINGS.md
+
+Check if `docs/EVIDENCE-AND-LEARNINGS.md` exists. If yes, skip — already adopted.
+
+If no, propose creating it with the following content (substitute the project name from `docs/STATUS.md`;
+use today's date for `[DATE]`):
+
+```markdown
+# [Project Name] — Evidence and Causal Learnings
+
+**Last updated:** [DATE]
+
+## Purpose
+
+This document preserves why conclusions changed: former belief, disconfirming or supporting evidence,
+root cause, current conclusion, confidence, and remaining uncertainty. `STATUS.md` says what is true now;
+`CONTEXT.md` is compact active memory; this file prevents durable causal knowledge from being pruned or
+reconstructed from raw transcripts.
+
+## Evidence vocabulary
+
+- **VERIFIED:** directly reproduced or confirmed by a discriminating artifact/audit.
+- **OBSERVED:** visible in an output or trace, but the cause may remain unresolved.
+- **INFERRED:** best explanation supported by evidence but not isolated experimentally.
+- **HYPOTHESIS:** plausible explanation awaiting a discriminating test.
+- **INVALIDATED:** contradicted by later evidence; retained so it is not repeated.
+- **OPEN:** unresolved or awaiting external state.
+
+Rank evidence by directness, discriminating power, and provenance—not source type or recency alone.
+For technical claims, prefer direct reproduction/artifacts and dated audits over derived summaries. For
+requirements and intent, a direct user statement is primary evidence even when recovered from a transcript.
+
+## Causal record
+
+_None recorded yet._
+
+## How to add a learning
+
+Use this shape:
+
+### Claim or incident
+
+- **Former belief/status:**
+- **Disconfirming or supporting evidence:**
+- **Root cause (if isolated):**
+- **Current conclusion + evidence label:**
+- **Remaining uncertainty / blast radius:**
+- **Source artifacts:**
+
+Preserve invalidated beliefs rather than deleting them. That is what stops the next session from deriving
+the same plausible but wrong explanation.
+```
+
+Show the user the proposed content. Ask: "Create docs/EVIDENCE-AND-LEARNINGS.md? (yes/no)" If yes,
+create it; if no, skip.
+
+### Change 2: Add shared evidence guidance to AGENTS.md
+
+Check whether `AGENTS.md` already contains both `## Evidence Discipline` and
+`EVIDENCE-AND-LEARNINGS.md`. If yes, skip. If only one is present, update the existing material instead of
+adding a duplicate section. Otherwise, propose adding a short reading-order entry plus this section:
+
+```markdown
+## Evidence Discipline
+
+- Use VERIFIED, OBSERVED, INFERRED, HYPOTHESIS, INVALIDATED, and OPEN consistently.
+- Preserve corrections: former belief → disconfirming evidence → root cause → current conclusion →
+  confidence and remaining uncertainty. Do not silently rewrite history.
+- STATUS.md says what is true now; CONTEXT.md is compact active memory;
+  EVIDENCE-AND-LEARNINGS.md keeps durable causal corrections.
+- Read EVIDENCE-AND-LEARNINGS.md when interpreting results, debugging disputed failures, or encountering
+  corrected claims. It is on-demand evidence, not mandatory full-session context.
+```
+
+Ask: "Add the shared evidence guidance to AGENTS.md? (yes/no)" If yes, edit; if no, skip. This shared
+location is what makes the convention work for Codex and Claude; do not put the only copy in `.claude/`.
+
+### Change 3: Add promotion rule to context-discipline.md
+
+Check whether `.claude/rules/context-discipline.md` exists and already mentions
+`EVIDENCE-AND-LEARNINGS.md`. If already present, skip. If the rule file does not exist, report that the
+shared AGENTS guidance still works and suggest `/charter-adopt context`; do not create unrelated context
+scaffolding silently.
+
+Otherwise propose adding:
+
+```markdown
+- Durable causal corrections (former belief → disconfirming evidence → root cause → new conclusion) →
+  `docs/EVIDENCE-AND-LEARNINGS.md`. Leave only a terse pointer in CONTEXT.md if the learning is still active.
+```
+
+Ask: "Teach context-discipline.md to promote durable causal corrections? (yes/no)" If yes, edit; if no,
+skip.
+
+After all changes are applied (or skipped), report:
+
+```text
+**Adoption complete: evidence**
+- EVIDENCE-AND-LEARNINGS.md: [created / skipped — already present / skipped — user declined]
+- AGENTS.md: [updated / skipped — already evidence-aware / skipped — user declined]
+- context-discipline.md: [updated / absent — adopt context first / skipped — already aware / user declined]
+- Next: record causal corrections when evidence changes a conclusion; keep current state in STATUS.md and
+  compact active memory in CONTEXT.md.
 ```
