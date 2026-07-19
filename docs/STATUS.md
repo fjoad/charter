@@ -1,6 +1,6 @@
 # Charter — Project Status
 
-**Last updated:** 2026-06-11 (v0.9.1 shipped)  
+**Last updated:** 2026-07-19 (v0.10.0 release)
 **Current branch:** `main`
 
 ---
@@ -14,18 +14,18 @@
 | Plugin manifest | Done | `.claude-plugin/` | plugin.json + marketplace.json |
 | Hooks | Done | `hooks/` | session-start.sh + turn-nudge.sh + hooks.json |
 | Skills | Done | `skills/` | brief-intake, codebase-inference, turn-ritual |
-| Commands | Done (v0.1.1) | `commands/` | 6 MD files — TOML never registered, fixed in v0.1.1 |
+| Commands | Done (v0.10.0) | `commands/` | 12 MD commands; optional conventions extend `/charter-adopt` rather than growing parallel setup commands. |
 | Subagent | Done | `agents/` | vision-drafter.md |
 | Template files | Done | `template/` | 4 rules + 3 doc skeletons + ADR/plan templates |
 | Extended docs | Done | `docs/` | ADOPTING, TOKEN-BUDGET, COMPARISON, README |
 | Verify script | Done | `scripts/verify-plugin.sh` | Pre-release checks: format, frontmatter, versions |
-| End-to-end tests | Done (v0.1.1) | — | All 6 commands verified on fresh install 2026-04-20 |
-| Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — v0.1.1 pushed |
-| Submitted to marketplace | Pending re-review | — | v0.1.0 submitted broken; v0.1.1 fix needs push + reviewer notification |
+| End-to-end tests | Done (v0.10.0) | `tests/e2e-install.sh` | 14 assertions across 5 real Claude sessions passed 2026-07-19. |
+| Published to GitHub | Done | https://github.com/fjoad/charter | Public, MIT — release tags through v0.10.0. |
+| Submitted to marketplace | Pending review | — | GitHub install remains the documented path until acceptance. |
 | Branch handling | Done (v0.2.0) | `hooks/`, `commands/`, `template/`, `tests/` | Merged 2026-05-12 — see [decision](decisions/2026-05-12-branch-handling.md) and [plan](plans/2026-05-12-branch-handling.md) |
-| Test harness | Done (v0.2.0) | `tests/`, `scripts/verify-plugin.sh` | Shell-based test runner; 32 fast assertions across session-start, turn-nudge, and plugin-structure |
+| Test harness | Done (v0.10.0) | `tests/`, `scripts/verify-plugin.sh` | 29 structural + 121 behavioral checks; CI runs the fast suite. |
 | CI | Done (v0.2.0) | `.github/workflows/test.yml` | GitHub Actions runs verify-plugin.sh on push to main + PRs |
-| E2E install test | Done (v0.2.0) | `tests/e2e-install.sh` | Spawns real `claude -p` sessions, verifies plugin loads + hook fires; 11 assertions, run manually before release (not in CI — costs tokens) |
+| E2E install test | Done (v0.10.0) | `tests/e2e-install.sh` | Spawns real `claude -p` sessions, verifies plugin loads + hook fires; 14 assertions, run manually before release (not in CI — costs tokens). |
 | Working memory (CONTEXT.md) | Done (v0.3.0) | `template/`, `hooks/`, `commands/`, `.claude/rules/` | AI-maintained working memory across compactions; auto-loaded by session-start; `/charter-remember` + `/charter-recover` + opt-in `/charter-adopt context`. Merged 2026-05-12. |
 | Tier-2 recovery (/charter-replay) | Done (v0.4.0) | `commands/`, `.claude/rules/` | Filtered-transcript recovery for when CONTEXT.md isn't enough. Three-tier model documented. |
 | Preview command + CONTEXT-per-branch articulation | Done (v0.5.0) | `commands/charter-preview.md`, `docs/ARCHITECTURE.md`, rules | Dry-run for init/attach/adopt-*. CONTEXT.md branch-scoped behavior made explicit. |
@@ -35,6 +35,7 @@
 | Token budget (enforced) | Done (v0.8.0) | `hooks/session-start.sh`, `scripts/measure-overhead.sh` | Completed plans skipped; plans cap 40 lines, CONTEXT 200; CI budget gate at 24k chars; /charter-cost measures for real. |
 | Dev-sync (staleness) | Done (v0.8.1, prune v0.9.1) | `scripts/dev-sync.sh`, `hooks/session-start.sh`, workflow.md | Release ritual refreshes own install; opt-in version-drift nudge; v0.9.1 prunes orphan cache version dirs. |
 | Smart recover + surface control | Done (v0.9.0) | `commands/charter-recover.md`, `commands/charter-help.md`, workflow.md | Single recovery entry point with auto-escalation; help grouped Daily/Power; new-command ADR guardrail. |
+| Shared agent bootstrap + causal evidence | Done (v0.10.0) | `AGENTS.md`, `CLAUDE.md`, `template/`, `commands/` | One canonical Claude/Codex project contract; optional durable evidence convention preserves causal corrections without startup token overhead. |
 
 ---
 
@@ -58,6 +59,7 @@ _None active._
 
 | Date | Decision | Why |
 |------|----------|-----|
+| 2026-07-19 | Canonical shared `AGENTS.md` + opt-in causal evidence memory | Claude and Codex need the same project truth; durable corrections must outlive prunable CONTEXT without becoming permanent injected context (see decisions/2026-07-19-cross-agent-evidence-memory.md) |
 | 2026-06-11 | Smart recover: one entry point, auto-escalation | Tier choice was friction at the worst moment; revises v0.4.0 separation reasoning (see decisions/2026-06-11-smart-recover.md) |
 | 2026-06-11 | Dev-sync: staleness fixed via finish ritual + opt-in nudge | Stale installs caused the sibling reinventions; the ritual that caused it now cures it (see decisions/2026-06-11-dev-sync.md) |
 | 2026-06-11 | Orient-block token budget enforced | Completed plans skipped, caps + CI gate; "measure, prune" applied to Charter itself (see decisions/2026-06-11-token-budget.md) |
@@ -90,8 +92,9 @@ _None active._
 9. ~~`/charter-help` + AI-facing discoverability (v0.6.0) — merged 2026-06-09~~ (done)
 10. ~~Self-contained replay-filter (v0.7.0) — merged 2026-06-09~~ (done)
 11. ~~Workflow-hardening arc: v0.8.0 token budget → v0.8.1 dev-sync → v0.9.0 smart recover~~ (done — all merged 2026-06-11)
-12. **Use Charter daily; let real friction drive the next feature** **(current)**
-13. Think through monorepo support (v2+ scope) — design pass only, no build
-11. Await marketplace review acceptance
-12. Update install instructions once marketplace accepted
-13. Monitor for user feedback and bug reports
+12. ~~Shared agent bootstrap + opt-in causal evidence memory (v0.10.0) — merged 2026-07-19~~ (done)
+13. **Use Charter daily; let real friction drive the next feature** **(current)**
+14. Think through monorepo support (v2+ scope) — design pass only, no build
+15. Await marketplace review acceptance
+16. Update install instructions once marketplace accepted
+17. Monitor for user feedback and bug reports
