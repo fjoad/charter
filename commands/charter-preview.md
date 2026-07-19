@@ -1,6 +1,6 @@
 ---
 description: "Dry-run for /charter-init and /charter-attach. Lists what would be scaffolded into this project, marks each file as NEW or COLLISION (existing files are skipped — Charter is non-destructive). Writes nothing."
-argument-hint: "[init | attach | adopt-branches | adopt-context]  (default: attach)"
+argument-hint: "[init | attach | adopt-branches | adopt-context | adopt-evidence]  (default: attach)"
 ---
 
 The user wants to preview what Charter would scaffold into this project before committing to it. **Write nothing to disk. This is a dry-run.**
@@ -12,6 +12,7 @@ Parse the argument:
 - `attach` → preview what `/charter-attach` would scaffold (brownfield: non-destructive, skips existing files)
 - `adopt-branches` → preview what `/charter-adopt branches` would add
 - `adopt-context` → preview what `/charter-adopt context` would add
+- `adopt-evidence` → preview what `/charter-adopt evidence` would add
 
 If the argument is unrecognized, list the supported options and stop.
 
@@ -51,12 +52,13 @@ Would SKIP (EXISTS — Charter is non-destructive):
 Available opt-in conventions after scaffold:
   /charter-adopt branches  — per-feature-branch plans, branch-aware finish ritual
   /charter-adopt context   — working-memory across /compact
+  /charter-adopt evidence  — durable causal corrections + evidence/confidence labels
 
 To actually scaffold: run /charter-attach (no flags needed — it'll run the codebase-inference skill to fill the docs with project-specific content).
-To preview a convention: /charter-preview adopt-branches or /charter-preview adopt-context.
+To preview a convention: /charter-preview adopt-branches, adopt-context, or adopt-evidence.
 ```
 
-## For `adopt-branches` and `adopt-context`
+## For `adopt-branches`, `adopt-context`, and `adopt-evidence`
 
 Read the corresponding section in `commands/charter-adopt.md` and list the changes it would propose, with the same NEW/EXISTS marking. Don't actually run anything from `charter-adopt.md`.
 

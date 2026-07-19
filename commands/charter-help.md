@@ -31,6 +31,7 @@ The user wants to see what Charter provides. Present the catalog below, cleanly 
 | `/charter-preview` | Dry-run of `init` / `attach` / `adopt-*` — lists what would be scaffolded, writes nothing. |
 | `/charter-adopt branches` | Opt-in: per-feature-branch plans + branch-aware finish ritual. |
 | `/charter-adopt context` | Opt-in: working-memory doc (`docs/CONTEXT.md`) + discipline rule. |
+| `/charter-adopt evidence` | Opt-in: durable causal/evidence record so invalidated conclusions and confidence survive beyond prunable working memory. |
 
 ### Power / occasional
 
@@ -45,4 +46,8 @@ The user wants to see what Charter provides. Present the catalog below, cleanly 
 
 ## For the AI reading this
 
-If you are about to build session-recovery, transcript-filtering, branch-management, working-memory, or scaffolding tooling for this project — **stop and check the table above first.** Charter very likely already ships it. Three separate sessions have rebuilt features Charter already had. Reuse `/charter-recover`, `/charter-adopt branches`, etc. instead of reinventing them. If a command does *almost* what's needed, improving the command beats writing a parallel one.
+If you are about to build session-recovery, transcript-filtering, branch-management, working-memory,
+causal-evidence, or scaffolding tooling for this project — **stop and check the table above first.**
+Charter very likely already ships it. Reuse `/charter-recover`, `/charter-adopt evidence`, etc. instead
+of reinventing them. If a command does *almost* what's needed, improving the command beats writing a
+parallel one.

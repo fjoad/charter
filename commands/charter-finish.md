@@ -59,6 +59,8 @@ You are on a feature branch. STATUS.md component sections must NOT be edited —
 3. **Do not touch** `docs/STATUS.md` Component Status, What to Work On Next, or Recent Decisions sections.
    - You MAY update an "In-flight Branches" section if it exists, but only to reflect this branch's status.
    - **`docs/CONTEXT.md` updates ARE allowed** — CONTEXT.md is branch-scoped working memory by design. Capture branch-specific learnings here; they'll be reviewed/pruned during the merge to main.
+   - **`docs/EVIDENCE-AND-LEARNINGS.md` updates ARE allowed** when adopted — causal evidence discovered
+     on the branch travels with the branch and is reviewed during merge.
 4. Commit changes on this branch.
 5. Invoke `superpowers:finishing-a-development-branch` to decide on merge/PR strategy. That skill will:
    - Check if the branch is ready (tests pass, plan complete)

@@ -1,6 +1,6 @@
 # Charter — Vision
 
-**Last updated:** 2026-04-17
+**Last updated:** 2026-07-19
 
 ---
 
@@ -14,11 +14,14 @@ Charter enforces session-to-session continuity through living docs and lightweig
 
 ## What Charter Is
 
-A Claude Code plugin that:
+A Claude Code plugin with an agent-neutral project scaffold that:
 1. **Scaffolds living docs** into any project (VISION, STATUS, ARCHITECTURE, decisions, plans)
-2. **Orients Claude at session start** by injecting current project state (~200 tokens)
+2. **Shares one project contract across Claude and Codex** through canonical `AGENTS.md`; Claude imports
+   it and receives automatic hooks, while Codex reads it directly
 3. **Classifies every request** by size and applies matching ritual depth — no under-discipline, no over-discipline
 4. **Enforces finish rituals** — docs updated, tests run, status recorded before declaring done
+5. **Separates active memory from durable causal knowledge** — CONTEXT is compact/prunable; the optional
+   evidence record preserves why beliefs changed and how strong the evidence is
 
 Charter layers on top of [superpowers](https://github.com/obra/superpowers). It doesn't replace superpowers skills; it coordinates when to invoke them.
 
@@ -39,6 +42,8 @@ Charter layers on top of [superpowers](https://github.com/obra/superpowers). It 
 - [ ] A greenfield project can be bootstrapped with `/ charter-init` in under 5 minutes
 - [ ] An existing project can have Charter attached with `/charter-attach` non-destructively
 - [ ] A new session in a Charter-managed project requires zero manual orientation by the user
+- [ ] Claude and Codex recover the same canonical project facts without maintaining duplicate instruction files
+- [ ] A corrected conclusion can preserve its causal/evidence chain without requiring transcript replay
 - [ ] Every request is classified to the correct tier at least 90% of the time
 - [ ] `/charter-finish` produces a complete standard report with no missing steps
 - [ ] Charter manages its own development (dogfood test passes)
@@ -55,6 +60,13 @@ Charter layers on top of [superpowers](https://github.com/obra/superpowers). It 
 **Checkpoint-based autonomy:** Plans embed `## CHECKPOINT: user review` markers. Between checkpoints, the AI runs autonomously. At each checkpoint, it pauses with a standard report. The manager decides whether to continue, redirect, or stop.
 
 **Session orientation:** The `SessionStart` hook reads STATUS.md and injects the current state into Claude's context. Claude always knows where the project stands before responding to the first message.
+
+**Shared agent bootstrap:** `AGENTS.md` is canonical. `CLAUDE.md` imports it; Codex discovers it directly.
+Agent-specific rules automate behavior but may not contain unique project truth.
+
+**Causal evidence memory:** `EVIDENCE-AND-LEARNINGS.md` is an opt-in durable layer for invalidated beliefs,
+discriminating evidence, root causes, confidence, and open uncertainty. It is read on demand rather than
+injected every session.
 
 **Standard report:** The canonical finish output format. Tests pass/fail, docs updated, commits pushed, next step. No variation.
 

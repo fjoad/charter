@@ -58,7 +58,8 @@ Charter will:
 
 ## Daily Use
 
-**Start a session:** Charter's `SessionStart` hook orients Claude automatically. No manual setup needed.
+**Start a session:** Charter's `SessionStart` hook orients Claude automatically. Codex reads the same
+canonical `AGENTS.md` and follows its shared STATUS/CONTEXT/evidence reading order.
 
 **Start the next step:**
 ```
@@ -91,6 +92,7 @@ docs/
   VISION.md           # Your project's thesis, goals, non-goals
   STATUS.md           # Current state, what's next (update this after each step)
   ARCHITECTURE.md     # Technical blueprint (fill in as you build)
+  CONTEXT.md          # Compact working memory across compactions
   decisions/
     TEMPLATE.md       # ADR template for design decisions
   plans/
@@ -101,10 +103,23 @@ docs/
     workflow.md       # Per-step cycle + finish checklist
     turn-ritual.md    # Request tier classifier
     testing.md        # Test discipline
+    context-discipline.md # Keeps CONTEXT compact and promotes durable knowledge
   settings.json       # Minimal safe permission allowlist
-AGENTS.md             # Canonical guide for AI assistants (edit this)
-CLAUDE.md             # One-line pointer to AGENTS.md
+AGENTS.md             # Canonical shared guide for Claude, Codex, and other assistants
+CLAUDE.md             # Explicitly imports @AGENTS.md
 ```
+
+### Optional durable evidence layer
+
+For research, benchmark, debugging, or incident-heavy projects where conclusions are often corrected:
+
+```text
+/charter-adopt evidence
+```
+
+This proposes `docs/EVIDENCE-AND-LEARNINGS.md`, shared evidence guidance in `AGENTS.md`, and promotion
+rules for durable causal corrections. It is opt-in and idempotent. Preview it first with
+`/charter-preview adopt-evidence`.
 
 ---
 
@@ -120,7 +135,11 @@ Charter is a discipline system, not a magic wand. Two things you need to do:
 
 ## Codex CLI
 
-Charter's `AGENTS.md` file is auto-discovered by Codex CLI. Open your project in Codex CLI and Charter's operational guide will be picked up automatically. The hook system (session-start orient, turn-nudge) is Claude Code-only — but the living docs and rules work everywhere.
+Charter's `AGENTS.md` is auto-discovered by Codex CLI. It contains the shared reading order and evidence
+discipline, so Codex recovers STATUS, CONTEXT, relevant evidence, architecture, and active plans without a
+second Codex-specific instruction file. `CLAUDE.md` imports that same file for Claude. The hook system
+(session-start orient, turn-nudge) remains Claude Code-only; cross-agent compatibility is shared project
+truth and recovery semantics, not identical runtime hooks.
 
 ---
 

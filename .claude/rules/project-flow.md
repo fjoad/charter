@@ -2,7 +2,12 @@
 
 ## How Everything Connects
 
-This project uses a layered system of docs and rules. Full map:
+This project uses shared docs plus agent-specific automation. Canonical project facts must be readable
+by every agent; `.claude/rules/` only automates Claude's use of them.
+
+**Shared bootstrap:**
+- `AGENTS.md` — canonical instructions for Claude, Codex, and other assistants
+- `CLAUDE.md` — imports `AGENTS.md`; it must not become a second source of truth
 
 **Auto-loaded every session (`.claude/rules/`):**
 - `project-flow.md` (this file) — session start, deciding what to do, doc map
@@ -10,8 +15,10 @@ This project uses a layered system of docs and rules. Full map:
 - `turn-ritual.md` — per-turn tier classifier and ritual routing
 - `testing.md` — what to test, test discipline
 
-**Read at session start (`docs/`):**
+**Project docs (`STATUS`/`CONTEXT` at session start; the rest as needed):**
 - `docs/STATUS.md` — where we are, what's next (source of truth for progress)
+- `docs/CONTEXT.md` — compact working memory, don't-repeats, user emphases
+- `docs/EVIDENCE-AND-LEARNINGS.md` (if adopted) — durable causal corrections; read on demand
 - `docs/ARCHITECTURE.md` — technical blueprint
 - `docs/VISION.md` — thesis, goals, non-goals, success criteria
 
@@ -32,8 +39,11 @@ This project uses a layered system of docs and rules. Full map:
 ## Starting a Session
 
 1. Read `docs/STATUS.md` — find the current step and what's next
-2. Read `docs/ARCHITECTURE.md` — understand how the current step fits
-3. Check `docs/plans/` — is there an existing plan for the current step?
+2. Read `docs/CONTEXT.md` — recover active caveats and don't-repeats
+3. Read `docs/EVIDENCE-AND-LEARNINGS.md` only when STATUS/CONTEXT cites it, a claim was
+   corrected/contested, or a discriminating experiment/debugging result needs interpretation
+4. Read `docs/ARCHITECTURE.md` — understand how the current step fits
+5. Check `docs/plans/` — is there an existing plan for the current step?
 
 ## Deciding What to Do
 
@@ -57,6 +67,8 @@ Follow the mandatory finish checklist in `workflow.md`. This includes updating S
 |----------|------|
 | What are we building and why? | `docs/VISION.md` |
 | Where are we now? What's next? | `docs/STATUS.md` |
+| What must this session remember? | `docs/CONTEXT.md` |
+| Why did our belief change? How strong is the evidence? | `docs/EVIDENCE-AND-LEARNINGS.md` (if adopted) |
 | How should this component work? | `docs/ARCHITECTURE.md` |
 | Why was a past decision made? | `docs/decisions/` |
 | Implementation plan for current step? | `docs/plans/` |

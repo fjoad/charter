@@ -56,4 +56,6 @@ The AI should update CONTEXT.md inline (mid-session, not as a finish step) when:
 - The user emphasizes something multiple times
 - A mid-stream decision is made that doesn't yet warrant an ADR
 
-When CONTEXT.md grows past ~200 lines, audit and prune. Promote design-y items to `docs/decisions/`, empirical items to a findings record, and delete items that are now obvious or stale.
+When CONTEXT.md grows past ~200 lines, audit and prune. Promote design-y items to `docs/decisions/`,
+durable causal corrections to `docs/EVIDENCE-AND-LEARNINGS.md` when adopted, other empirical items to a
+findings record, and delete items that are now obvious or stale.

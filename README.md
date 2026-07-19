@@ -1,6 +1,6 @@
 # Charter
 
-**AI-assisted project discipline plugin for Claude Code and Codex CLI.**
+**Claude Code plugin with an agent-neutral project scaffold for Claude, Codex, and other assistants.**
 
 You're the manager. The AI is your dev team. Charter is your PMO.
 
@@ -17,7 +17,7 @@ Charter fixes this.
 **Without Charter** — every session starts with:
 > "What are we building? Where did we leave off? What decisions did we make?"
 
-**With Charter** — Claude opens with:
+**With Charter** — the assistant opens with:
 > "You're on step 3: implementing the render pipeline. Last session you decided to use Puppeteer over wkhtmltopdf (see docs/decisions/). Next: write the HTML emit stage."
 
 ---
@@ -55,7 +55,8 @@ Or for an existing project:
 
 ## What It Does
 
-**At session start:** Reads your STATUS.md and orients Claude before the first message. Zero re-explanation.
+**At session start:** Claude's hook injects STATUS/CONTEXT before the first message. Codex and other agents
+recover the same state through the canonical `AGENTS.md` reading contract. Zero re-explanation.
 
 **On every request:** Classifies size (trivial/small/medium/major) and applies matching ritual depth. Typo fix → direct execution. Architecture change → full plan, checkpoint, verify, report.
 
@@ -69,6 +70,10 @@ Or for an existing project:
 
 **Three-tier recovery model (v0.4.0+):** `/charter-recover` (CONTEXT.md only, cheapest) → `/charter-replay` (dialogue-filtered transcript, medium) → raw transcript read (anti-pattern, never the right answer). The replay command's prompt is also useful as a standalone instruction in non-Charter sessions.
 
+**Durable causal memory (v0.10.0+):** `/charter-adopt evidence` adds an optional
+`docs/EVIDENCE-AND-LEARNINGS.md` for conclusions that must outlive prunable working memory: former belief,
+disconfirming evidence, root cause, corrected conclusion, confidence, and remaining uncertainty.
+
 ---
 
 ## Commands
@@ -80,7 +85,7 @@ Charter runs automatically — you don't need these commands for day-to-day use.
 | `/charter-help` | List everything Charter offers — commands, conventions, recovery tiers |
 | `/charter-init` | Once, to bootstrap a new project |
 | `/charter-attach` | Once, to attach Charter to an existing project |
-| `/charter-adopt` | Opt into a new Charter convention in an existing project (e.g. `/charter-adopt branches` or `/charter-adopt context`) |
+| `/charter-adopt` | Opt into a convention: `branches`, `context`, or `evidence` |
 | `/charter-remember` | Capture something to `docs/CONTEXT.md` so it survives `/compact` |
 | `/charter-recover` | After `/compact`, restore orientation — reads CONTEXT.md + STATUS.md + branch plan, auto-escalates to a transcript replay if working memory is thin |
 | `/charter-replay` | Direct access to the dialogue-only transcript replay (recover runs this for you when needed) |
@@ -99,12 +104,16 @@ docs/
   VISION.md       # Thesis, goals, non-goals, success criteria
   STATUS.md       # Current state, what's next (the source of truth)
   ARCHITECTURE.md # Technical blueprint
+  CONTEXT.md      # Compact/prunable working memory
   decisions/      # ADRs for design choices
   plans/          # Implementation plans with CHECKPOINT markers
 .claude/rules/    # Auto-loaded session-start + workflow + ritual + testing rules
 AGENTS.md         # Canonical guide — works with Claude Code, Codex CLI, and more
-CLAUDE.md         # One-line pointer to AGENTS.md
+CLAUDE.md         # Explicitly imports AGENTS.md; no second source of truth
 ```
+
+Optional: `/charter-adopt evidence` adds `docs/EVIDENCE-AND-LEARNINGS.md` plus shared Claude/Codex
+guidance for durable causal corrections.
 
 ---
 
@@ -117,7 +126,8 @@ Charter adds ~1.8% of context window overhead per session (~3,550 tokens in a 20
 ## How It Compares
 
 - **vs superpowers:** Charter layers on top of superpowers. superpowers handles execution skills; Charter handles routing and session continuity. Use both.
-- **vs CLAUDE.md by hand:** Charter templates it correctly, keeps it current via finish ritual, and hooks it into session start automatically.
+- **vs CLAUDE.md by hand:** Charter keeps one canonical `AGENTS.md`, imports it into Claude, lets Codex
+  read it directly, and keeps the living docs current through finish rituals.
 - **vs spec-driven tools:** Charter is discipline-first, not spec-first. Works iteratively, no upfront spec required.
 
 Full comparison: [docs/COMPARISON.md](docs/COMPARISON.md)

@@ -68,3 +68,5 @@ On feature branches:
 - Edit only your branch's plan file in `docs/plans/`
 - Do NOT edit STATUS.md Component Status, What to Work On Next, or Recent Decisions sections (those update only on merge to main)
 - **CONTEXT.md edits ARE allowed on feature branches.** It's branch-scoped working memory — each branch has its own. Capture freely; prune branch-specific entries on merge.
+- **EVIDENCE-AND-LEARNINGS.md edits ARE allowed on feature branches** when adopted. Durable causal
+  evidence travels with the work that produced it and is reviewed during merge.
